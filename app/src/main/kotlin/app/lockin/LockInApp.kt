@@ -21,7 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import app.lockin.core.designsystem.component.LockInIcons
+import app.lockin.feature.planner.PlannerRoute
 import app.lockin.feature.settings.SettingsRoute
+import app.lockin.feature.stats.StatsRoute
 import app.lockin.feature.subjects.SubjectsRoute
 import app.lockin.feature.timer.TimerRoute
 
@@ -76,8 +78,8 @@ fun LockInApp() {
         ) {
             when (tab) {
                 Tab.TIMER -> TimerRoute()
-                Tab.PLANNER -> Placeholder("Planner")
-                Tab.STATS -> Placeholder("Stats")
+                Tab.PLANNER -> PlannerRoute(onSessionStarted = { tab = Tab.TIMER })
+                Tab.STATS -> StatsRoute()
                 Tab.SETTINGS -> SettingsRoute(
                     onOpenSubjects = { pushed = Pushed.SUBJECTS },
                     onOpenBlocker = { pushed = Pushed.BLOCKER },

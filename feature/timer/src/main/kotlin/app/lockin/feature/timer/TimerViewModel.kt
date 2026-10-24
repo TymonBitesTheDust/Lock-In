@@ -5,21 +5,18 @@ import androidx.lifecycle.viewModelScope
 import app.lockin.core.data.DDayRepository
 import app.lockin.core.data.LiveTotals
 import app.lockin.core.data.PreferencesRepository
+import app.lockin.core.data.SessionLauncher
 import app.lockin.core.data.StudyLogRepository
 import app.lockin.core.data.SubjectRepository
-import app.lockin.core.data.pomodoroMode
 import app.lockin.core.model.DDay
 import app.lockin.core.model.StudyPreferences
 import app.lockin.core.model.StudySegment
 import app.lockin.core.model.Subject
 import app.lockin.core.model.SubjectPalette
-import app.lockin.core.timer.RunState
-import app.lockin.core.timer.SubjectRef
 import app.lockin.core.timer.TimePoint
 import app.lockin.core.timer.TimeSource
 import app.lockin.core.timer.TimerCommand
 import app.lockin.core.timer.TimerController
-import app.lockin.core.timer.TimerMode
 import app.lockin.core.timer.TimerState
 import app.lockin.core.timer.readoutAt
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,14 +28,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.UUID
 import javax.inject.Inject
 
 data class SubjectRow(
@@ -76,6 +71,7 @@ class TimerViewModel @Inject constructor(
     private val subjectRepository: SubjectRepository,
     private val studyLog: StudyLogRepository,
     private val preferences: PreferencesRepository,
+    private val launcher: SessionLauncher,
     ddayRepository: DDayRepository,
 ) : ViewModel() {
 
@@ -122,7 +118,7 @@ class TimerViewModel @Inject constructor(
     fun onIntent(intent: TimerIntent) {
         viewModelScope.launch {
             when (intent) {
-                is TimerIntent.StartSubject -> start(intent.subjectId)
+                is TimerIntent.StartSubject -> launcher.startOrResume(intent.subjectId)
                 TimerIntent.Pause -> controller.dispatch(TimerCommand.Pause)
                 TimerIntent.Resume -> controller.dispatch(TimerCommand.Resume)
                 TimerIntent.Skip -> controller.dispatch(TimerCommand.SkipPhase)
@@ -134,25 +130,6 @@ class TimerViewModel @Inject constructor(
     }
 
     fun nextSubjectColor(): Int = SubjectPalette.next(uiState.value.subjects.filter { it.id != null }.map { it.color })
-
-    /**
-     * Starts [subjectId] in the preferred mode. Tapping the subject that is already active resumes
-     * it if paused; tapping another one ends the current session first (its time is kept).
-     */
-    private suspend fun start(subjectId: Long?) {
-        val current = controller.state.value
-        if (current is TimerState.Active) {
-            if (current.subject.id == subjectId) {
-                if (current.run is RunState.Paused) controller.dispatch(TimerCommand.Resume)
-                return
-            }
-            controller.dispatch(TimerCommand.Stop)
-        }
-        val prefs = preferences.current()
-        val name = subjectId?.let { id -> subjectRepository.subjects.first().firstOrNull { it.id == id }?.name } ?: GENERAL
-        val mode = if (prefs.preferPomodoro) prefs.pomodoroMode() else TimerMode.Stopwatch
-        controller.dispatch(TimerCommand.Start(UUID.randomUUID().toString(), SubjectRef(subjectId, name), mode))
-    }
 
     private fun ticks(inputs: Inputs): Flow<TimerHomeState> = flow {
         while (true) {
@@ -197,7 +174,7 @@ class TimerViewModel @Inject constructor(
 
     private companion object {
         const val STOP_TIMEOUT_MS = 5_000L
-        const val GENERAL = "General"
-        val GENERAL_COLOR = 0xFF8A9099.toInt()
+        const val GENERAL = SessionLauncher.GENERAL
+        val GENERAL_COLOR = SessionLauncher.GENERAL_COLOR
     }
 }
