@@ -84,9 +84,12 @@ class BackgroundReliability @Inject constructor(
             null
         }
 
+    // The Live Updates guide calls this ACTION_MANAGE_APP_PROMOTED_NOTIFICATIONS, but the SDK
+    // constant (added in Android 16) is ACTION_APP_NOTIFICATION_PROMOTION_SETTINGS.
+    @SuppressLint("NewApi")
     fun liveUpdateSettings(): Intent? =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
-            Intent(Settings.ACTION_MANAGE_APP_PROMOTED_NOTIFICATIONS)
+            Intent(Settings.ACTION_APP_NOTIFICATION_PROMOTION_SETTINGS)
                 .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
         } else {
             null
