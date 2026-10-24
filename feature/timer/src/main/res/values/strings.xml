@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="timer_idle_title">Ready to lock in?</string>
+    <string name="timer_idle_body">Your time keeps counting with the screen off.</string>
+    <string name="timer_start_stopwatch">Start studying</string>
+    <string name="timer_start_pomodoro">Start Pomodoro · 25 / 5</string>
+
+    <string name="timer_focus">Focus</string>
+    <string name="timer_focus_round">Focus · round %1$d</string>
+    <string name="timer_short_break">Short break</string>
+    <string name="timer_long_break">Long break</string>
+    <!-- %1$s total focus time this session, for example "1:31:18" -->
+    <string name="timer_session_focus">%1$s focused this session</string>
+
+    <string name="timer_pause">Pause</string>
+    <string name="timer_resume">Resume</string>
+    <string name="timer_skip">Skip</string>
+    <string name="timer_stop">Stop</string>
+
+    <string name="timer_status_paused">Paused</string>
+    <string name="timer_status_break_over">Break\'s over. Resume when you\'re ready.</string>
+    <string name="timer_status_round_done">Round done. Resume to start your break.</string>
+    <string name="timer_status_interrupted">Your phone restarted, so we paused here. Everything up to the restart was counted.</string>
+</resources>

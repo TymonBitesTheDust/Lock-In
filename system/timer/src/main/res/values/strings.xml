@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="timer_channel_ongoing">Study timer</string>
+    <string name="timer_channel_ongoing_description">Shows your session while it runs.</string>
+    <string name="timer_channel_alerts">Break and focus alerts</string>
+    <string name="timer_channel_alerts_description">Tells you when a focus round or break ends.</string>
+
+    <string name="timer_phase_focus">Focus</string>
+    <string name="timer_phase_short_break">Short break</string>
+    <string name="timer_phase_long_break">Long break</string>
+
+    <!-- %1$s subject, %2$s phase. Example: "Physics · Focus" -->
+    <string name="timer_title">%1$s · %2$s</string>
+    <string name="timer_text_studying">Studying</string>
+    <string name="timer_text_round">Round %1$d</string>
+    <string name="timer_text_next_round">Round %1$d is next</string>
+    <!-- %1$s focus time so far, for example "42:10" -->
+    <string name="timer_text_paused">Paused · %1$s focused</string>
+    <string name="timer_text_awaiting_focus">Break\'s over. Resume when you\'re ready.</string>
+    <string name="timer_text_awaiting_break">Round done. Resume to start your break.</string>
+    <string name="timer_text_interrupted">Paused after a restart · %1$s counted</string>
+    <string name="timer_text_restoring">Restoring your session</string>
+    <string name="timer_text_detached">Your timer is still counting. Tap to open Lock In.</string>
+    <string name="timer_chip_paused">Paused</string>
+
+    <string name="timer_action_pause">Pause</string>
+    <string name="timer_action_resume">Resume</string>
+    <string name="timer_action_skip">Skip</string>
+    <string name="timer_action_stop">Stop</string>
+
+    <string name="timer_alert_round_done">Round done</string>
+    <string name="timer_alert_break_over">Break\'s over</string>
+    <!-- %1$s break label, for example "Short break" -->
+    <string name="timer_alert_break_started">%1$s started.</string>
+    <string name="timer_alert_break_waiting">Start your break when you\'re ready.</string>
+    <!-- %1$s subject -->
+    <string name="timer_alert_focus_started">Back to %1$s.</string>
+    <string name="timer_alert_focus_waiting">Resume when you\'re ready to focus.</string>
+    <string name="timer_alert_interrupted_title">Session paused</string>
+    <!-- %1$s a time of day, for example "10:42 PM" -->
+    <string name="timer_alert_interrupted_text">Your phone restarted. Study time up to %1$s was counted.</string>
+</resources>

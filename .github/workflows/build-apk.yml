@@ -1,0 +1,71 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-apk
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          # Last entry becomes JAVA_HOME; 17 stays available as a toolchain.
+          java-version: |
+            17
+            21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Install Android SDK Platform 37
+        run: |
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKM" --licenses > /dev/null || true
+          "$SDKM" "platforms;android-37" || echo "::warning::sdkmanager could not install platforms;android-37; AGP will try"
+
+      - name: Run engine tests and assemble debug APK
+        id: build
+        run: |
+          set -o pipefail
+          ./gradlew :core:timer:test :app:assembleDebug --stacktrace --continue 2>&1 | tee build.log
+
+      - name: Upload APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lock-in-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+
+      # Mirrors the result (APK, log, errors) to the ci-output branch so it can be read with plain git.
+      - name: Publish result to ci-output branch
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STATUS: ${{ steps.build.outcome }}
+        run: |
+          OUT="$RUNNER_TEMP/ci-output"
+          mkdir -p "$OUT"
+          if [ -f build.log ]; then cp build.log "$OUT/"; else echo "no build log" > "$OUT/build.log"; fi
+          grep -nE "^e: |^w: .*error|error:|FAILURE|What went wrong|BUILD (SUCCESSFUL|FAILED)|Could not|^> |FAILED$" build.log 2>/dev/null | head -600 > "$OUT/errors.txt" || true
+          cp app/build/outputs/apk/debug/*.apk "$OUT/" 2>/dev/null || true
+          find . -path '*/build/test-results/*' -name '*.xml' -exec cp --parents {} "$OUT/" \; 2>/dev/null || true
+          echo "sha=$GITHUB_SHA status=$STATUS run=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > "$OUT/RESULT.txt"
+          cd "$OUT"
+          git init -q -b ci-output
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "CI $STATUS for $GITHUB_SHA"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ci-output

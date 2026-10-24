@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Foreground service. specialUse because no typed category fits a study timer (see ARCHITECTURE.md §5.1).
+         Play Console: declare it under Policy > App content > Foreground service permissions. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <!-- Runtime permission on Android 13+. The timer still works if denied; only the notification is hidden. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Android 16+ Live Updates: lets the ongoing timer notification show as a status-bar chip. Install-time. -->
+    <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
+
+    <!-- Optional, user-granted (denied by default on Android 14+). Without it, break alerts use a
+         permission-free in-process alarm plus an inexact backstop. Never USE_EXACT_ALARM: Play reserves
+         that for alarm-clock and calendar apps. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!-- Restore an active session after reboot. The receiver is only enabled while a session is active. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application>
+
+        <service
+            android:name=".service.StudyTimerService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="User-started study session timer. While the user has a session running, the service keeps the elapsed study time visible in an ongoing notification with pause and stop controls, enforces the app-blocking rules the user chose for that session, and shares the user's live study status with study groups they joined. It stops as soon as the user ends the session." />
+        </service>
+
+        <receiver
+            android:name=".receiver.TimerActionReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".alarm.TimerWakeUpReceiver"
+            android:exported="false" />
+
+        <!-- Exported only because system broadcasts arrive from outside the app; the receiver
+             checks the action and ignores anything else. Disabled until a session starts. -->
+        <receiver
+            android:name=".receiver.TimerSystemEventReceiver"
+            android:enabled="false"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>

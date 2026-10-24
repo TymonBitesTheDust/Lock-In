@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+. A live session is tied to this device's clocks; restoring it elsewhere would
+     resurrect a half-finished session. Study history (Room) is backed up; the live snapshot is not. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="datastore/timer_snapshot.preferences_pb" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="datastore/timer_snapshot.preferences_pb" />
+    </device-transfer>
+</data-extraction-rules>
