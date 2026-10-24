@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import app.lockin.core.designsystem.component.LockInIcons
+import app.lockin.feature.blocker.BlockerRoute
 import app.lockin.feature.planner.PlannerRoute
 import app.lockin.feature.settings.SettingsRoute
 import app.lockin.feature.stats.StatsRoute
@@ -51,7 +52,7 @@ fun LockInApp() {
             return
         }
         Pushed.BLOCKER -> {
-            Placeholder("Focus protection")
+            BlockerRoute(onBack = { pushed = null })
             return
         }
         null -> Unit
