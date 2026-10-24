@@ -259,6 +259,7 @@ Layered, cheapest first:
 | Engine | JVM tests with a `FakeClock` that can sleep, jump the wall clock and reboot | 24 tests (19 engine, 5 codec), passing |
 | Controller | JVM tests with fake store, sink, alarm and host: commit order, restore after process death and reboot, alarm projection | 7 tests, passing |
 | Service, receivers, notification | Instrumented tests | Next sprint |
+| Whole build | GitHub Actions: engine tests + `assembleDebug` on every push to `main`; APK uploaded as a run artifact | Passing |
 
 A deliberate 1 ms boundary mutation fails 5 engine tests, so the suite is sensitive to drift.
 
@@ -279,7 +280,7 @@ adb reboot                                               # "paused after restart
 1. **Credit for unobserved time.** If the process dies (same boot) and comes back hours later, the engine currently credits the whole gap, the honest-user default. Because the blocker cannot enforce anything while the process is dead, leaderboard integrity needs more. Recommendation for the blocker revision: on restore after a gap, query `UsageStatsManager` for foreground-app events in the unobserved window and deduct time spent in blocked apps, keeping the engine pure by passing the audit result in as a command.
 2. **Play review of `specialUse`.** The subtype text is written for a reviewer. Keep a short screen recording of a session (notification, pause, stop) ready in case review asks for one.
 3. **Kotlin 2.4 with Dagger.** Dagger's bundled Kotlin metadata reader has lagged new Kotlin releases before (google/dagger#5059). The Hilt convention plugin pins `kotlin-metadata-jvm` to our Kotlin version on the KSP classpath as a precaution. If the first sync still complains, temporarily drop Kotlin to 2.3.21.
-4. **APIs to confirm on first build.** This scaffold was written without access to Google's Maven repository, so the Android modules have not been compiled yet. The ones most worth a glance if the first build fails: the Android 17 `setExactAndAllowWhileIdle(…, Executor, OnAlarmListener)` overload, `NotificationManager.canPostPromotedNotifications()`, and `Settings.ACTION_MANAGE_APP_PROMOTED_NOTIFICATIONS`.
+4. ~~**APIs to confirm on first build.**~~ Resolved 24 Oct 2026, first CI build. The Android 17 `setExactAndAllowWhileIdle(…, Executor, OnAlarmListener)` overload and `NotificationManager.canPostPromotedNotifications()` compile against SDK 37 as written. `Settings.ACTION_MANAGE_APP_PROMOTED_NOTIFICATIONS` (the name the Live Updates guide uses) does not exist; the SDK constant, added in Android 16, is `Settings.ACTION_APP_NOTIFICATION_PROMOTION_SETTINGS`. CI (`.github/workflows/build-apk.yml`) now runs the engine tests and assembles the debug APK on every push to `main`.
 
 ## 8. Next revisions
 
