@@ -21,12 +21,19 @@ include(":app")
 
 include(":core:timer")
 include(":core:designsystem")
+include(":core:model")
+include(":core:database")
+include(":core:data")
 
 include(":system:timer")
+include(":system:blocker")
 
 include(":feature:timer")
+include(":feature:planner")
+include(":feature:stats")
+include(":feature:subjects")
+include(":feature:blocker")
+include(":feature:settings")
 
 // Added in later sprints (see docs/ARCHITECTURE.md):
-// :core:model  :core:database  :core:datastore  :core:network  :core:data
-// :system:blocker  :system:presence  :system:widgets
-// :feature:stats  :feature:groups  :feature:subjects  :feature:blocker  :feature:onboarding
+// :core:network  :system:presence  :system:widgets  :feature:groups  :feature:onboarding

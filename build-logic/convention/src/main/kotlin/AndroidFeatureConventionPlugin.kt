@@ -16,6 +16,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
         dependencies {
             add("implementation", project(":core:designsystem"))
             add("implementation", libs.lib("androidx-compose-material3"))
+            add("implementation", libs.lib("androidx-compose-material-icons-core"))
             add("implementation", libs.lib("androidx-activity-compose"))
             add("implementation", libs.lib("androidx-lifecycle-runtime-compose"))
             add("implementation", libs.lib("androidx-lifecycle-viewmodel-compose"))

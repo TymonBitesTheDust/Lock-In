@@ -39,7 +39,7 @@ jobs:
         id: build
         run: |
           set -o pipefail
-          ./gradlew :core:timer:test :app:assembleDebug --stacktrace --continue 2>&1 | tee build.log
+          ./gradlew :core:timer:test :core:model:test :app:assembleDebug --stacktrace --continue 2>&1 | tee build.log
 
       - name: Upload APK
         if: success()

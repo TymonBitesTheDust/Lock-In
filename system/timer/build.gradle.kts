@@ -9,6 +9,7 @@ android {
 
 dependencies {
     api(project(":core:timer"))
+    implementation(project(":core:data"))
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.service)
     implementation(libs.androidx.datastore.preferences)

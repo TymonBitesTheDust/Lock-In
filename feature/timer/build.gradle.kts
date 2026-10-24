@@ -9,4 +9,5 @@ android {
 dependencies {
     // The TimerController interface only. Its implementation is bound by :system:timer in the app graph.
     implementation(project(":core:timer"))
+    implementation(project(":core:data"))
 }

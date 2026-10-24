@@ -9,11 +9,11 @@ import app.lockin.core.timer.TimerAnnouncer
 import app.lockin.core.timer.TimerController
 import app.lockin.core.timer.TimerForegroundHost
 import app.lockin.core.timer.TimerSnapshotStore
+import app.lockin.core.data.RoomStudyRecordSink
 import app.lockin.system.timer.alarm.AlarmPhaseWakeUpScheduler
 import app.lockin.system.timer.clock.SystemTimeSource
 import app.lockin.system.timer.notification.NotificationTimerAnnouncer
 import app.lockin.system.timer.persistence.DataStoreTimerSnapshotStore
-import app.lockin.system.timer.record.LoggingStudyRecordSink
 import app.lockin.system.timer.service.ServiceForegroundHost
 import dagger.Binds
 import dagger.Module
@@ -72,9 +72,9 @@ abstract class TimerBindsModule {
     @Binds
     abstract fun snapshotStore(impl: DataStoreTimerSnapshotStore): TimerSnapshotStore
 
-    // Replaced by the Room-backed sink when :core:database lands (Room schema step).
+    // Upserts on (sessionId, index), so replaying a snapshot after a crash never double-counts.
     @Binds
-    abstract fun recordSink(impl: LoggingStudyRecordSink): StudyRecordSink
+    abstract fun recordSink(impl: RoomStudyRecordSink): StudyRecordSink
 
     @Binds
     abstract fun wakeUpScheduler(impl: AlarmPhaseWakeUpScheduler): PhaseWakeUpScheduler

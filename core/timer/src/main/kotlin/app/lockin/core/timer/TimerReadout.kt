@@ -88,3 +88,13 @@ object TimerFormat {
 
     fun clock(readout: TimerReadout): String = clock(readout.displayMs, roundUp = readout.isCountdown)
 }
+
+/**
+ * Focus time in this session that is not yet in the database: the running stretch plus any
+ * Pomodoro boundaries crossed but not committed yet. Live totals are `stored segments + this`.
+ */
+fun TimerState.unrecordedFocusMs(now: TimePoint): Long {
+    val active = this as? Active ?: return 0
+    val readout = readoutAt(now) ?: return 0
+    return (readout.sessionFocusMs - active.focusBankedMs).coerceAtLeast(0)
+}
