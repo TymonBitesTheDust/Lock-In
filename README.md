@@ -4,6 +4,12 @@ Android study timer with per-subject tracking, a planner, statistics, app blocki
 
 **Read first:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
+## Download
+
+**[Download the latest APK](https://github.com/TymonBitesTheDust/Lock-In/releases/latest/download/Lock-In.apk)** (Android 8.0+) · [All releases](https://github.com/TymonBitesTheDust/Lock-In/releases)
+
+On your phone, open the file and allow your browser to install unknown apps when asked.
+
 ## Features
 
 - **Timer**: stopwatch or Pomodoro (lengths in Settings) per subject, to the second. Today's total and each subject's time on the home screen. Foreground service with an ongoing notification and a system-drawn clock; time stays exact through Doze, process death, late alarms and clock changes.
@@ -23,7 +29,9 @@ Requirements: JDK 17+, an Android Studio release that supports AGP 9.4, Android 
 ./gradlew :app:assembleDebug                   # app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Every push to `main` builds the APK on GitHub Actions (artifact `lock-in-debug-apk`) and runs it on an emulator, walking every screen (`scripts/ui-smoke.sh`). Debug builds are signed with the shared `keystore/debug.keystore`, so a new APK installs over the old one. Never use that key for release.
+Every push to `main` builds the APK on GitHub Actions (artifact `lock-in-debug-apk`) and runs it on an emulator, walking every screen (`scripts/ui-smoke.sh`).
+
+To publish a release: bump `versionCode` and `versionName` in `app/build.gradle.kts`, update `.github/release-notes.md`, then push a matching tag (`git tag v0.3.0 && git push origin v0.3.0`). The workflow builds, runs the emulator test, and only then attaches `Lock-In.apk` to a new GitHub Release. Debug builds are signed with the shared `keystore/debug.keystore`, so a new APK installs over the old one. Never use that key for release.
 
 ## Firebase (study groups)
 
