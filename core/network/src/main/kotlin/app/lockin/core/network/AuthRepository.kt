@@ -39,19 +39,21 @@ class AuthRepository @Inject constructor(
 
     fun currentAccount(): Account? = if (firebase.isConfigured) firebase.auth.currentUser?.toAccount() else null
 
-    suspend fun signUp(name: String, email: String, password: String) = friendly {
+    suspend fun signUp(name: String, email: String, password: String): Unit = friendly {
         val result = firebase.auth.createUserWithEmailAndPassword(email.trim(), password).await()
         result.user?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name.trim()).build())?.await()
         firebase.auth.currentUser?.reload()?.await()
         profileChanges.value++
     }
 
-    suspend fun signIn(email: String, password: String) = friendly {
+    suspend fun signIn(email: String, password: String): Unit = friendly {
         firebase.auth.signInWithEmailAndPassword(email.trim(), password).await()
+        Unit
     }
 
-    suspend fun sendPasswordReset(email: String) = friendly {
+    suspend fun sendPasswordReset(email: String): Unit = friendly {
         firebase.auth.sendPasswordResetEmail(email.trim()).await()
+        Unit
     }
 
     fun signOut() {
