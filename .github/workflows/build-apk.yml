@@ -35,6 +35,17 @@ jobs:
           yes | "$SDKM" --licenses > /dev/null || true
           "$SDKM" "platforms;android-37" || echo "::warning::sdkmanager could not install platforms;android-37; AGP will try"
 
+      - name: Firebase config from secret
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then
+            printf '%s' "$GOOGLE_SERVICES_JSON" > app/google-services.json
+            echo "Firebase config written"
+          else
+            echo "::notice::No GOOGLE_SERVICES_JSON secret; building without Firebase (groups disabled)"
+          fi
+
       - name: Run engine tests and assemble debug APK
         id: build
         run: |

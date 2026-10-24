@@ -24,9 +24,11 @@ include(":core:designsystem")
 include(":core:model")
 include(":core:database")
 include(":core:data")
+include(":core:network")
 
 include(":system:timer")
 include(":system:blocker")
+include(":system:presence")
 
 include(":feature:timer")
 include(":feature:planner")
@@ -34,6 +36,7 @@ include(":feature:stats")
 include(":feature:subjects")
 include(":feature:blocker")
 include(":feature:settings")
+include(":feature:groups")
 
 // Added in later sprints (see docs/ARCHITECTURE.md):
-// :core:network  :system:presence  :system:widgets  :feature:groups  :feature:onboarding
+// :system:widgets  :feature:onboarding

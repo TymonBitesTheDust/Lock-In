@@ -8,3 +8,6 @@ build/
 /captures
 .externalNativeBuild
 .cxx
+
+# Firebase config: kept out of the public repo; CI writes it from the GOOGLE_SERVICES_JSON secret.
+/app/google-services.json

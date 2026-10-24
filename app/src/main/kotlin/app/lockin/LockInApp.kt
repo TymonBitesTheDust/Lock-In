@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import app.lockin.core.designsystem.component.LockInIcons
 import app.lockin.feature.blocker.BlockerRoute
+import app.lockin.feature.groups.GroupsRoute
 import app.lockin.feature.planner.PlannerRoute
 import app.lockin.feature.settings.SettingsRoute
 import app.lockin.feature.stats.StatsRoute
@@ -29,7 +30,7 @@ import app.lockin.feature.subjects.SubjectsRoute
 import app.lockin.feature.timer.TimerRoute
 
 /** Bottom-level destinations. */
-enum class Tab(val label: String) { TIMER("Timer"), PLANNER("Planner"), STATS("Stats"), SETTINGS("Settings") }
+enum class Tab(val label: String) { TIMER("Timer"), PLANNER("Planner"), STATS("Stats"), GROUPS("Groups"), SETTINGS("Settings") }
 
 /** Full-screen destinations pushed above the tabs. */
 enum class Pushed { SUBJECTS, BLOCKER }
@@ -81,6 +82,7 @@ fun LockInApp() {
                 Tab.TIMER -> TimerRoute()
                 Tab.PLANNER -> PlannerRoute(onSessionStarted = { tab = Tab.TIMER })
                 Tab.STATS -> StatsRoute()
+                Tab.GROUPS -> GroupsRoute()
                 Tab.SETTINGS -> SettingsRoute(
                     onOpenSubjects = { pushed = Pushed.SUBJECTS },
                     onOpenBlocker = { pushed = Pushed.BLOCKER },
@@ -96,6 +98,7 @@ private fun TabIcon(tab: Tab) {
         Tab.TIMER -> LockInIcons.timer
         Tab.PLANNER -> LockInIcons.planner
         Tab.STATS -> LockInIcons.stats
+        Tab.GROUPS -> LockInIcons.groups
         Tab.SETTINGS -> null
     }
     if (painter != null) Icon(painter, contentDescription = null) else Icon(Icons.Filled.Settings, contentDescription = null)
