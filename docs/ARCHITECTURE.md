@@ -1,6 +1,6 @@
 # Lock In: Android Architecture
 
-Version 0.1 · 24 Oct 2026 · Scope of this revision: system architecture and the study-timer foreground service (both implemented in this repository). App blocking, the Room schema, live presence and the sprint roadmap follow as separate revisions.
+Version 0.2 · 24 Oct 2026 · Scope: system architecture, the study-timer foreground service (§5), and the feature set built on it (§6): subjects, planner and to-dos, statistics, D-Day countdowns, app blocking with an allowed-apps list, and study groups on Firebase. All implemented in this repository.
 
 ---
 
@@ -16,9 +16,10 @@ Checked against official release pages on 24 Oct 2026.
 | Language | Kotlin **2.4.21**, KSP **2.3.11** | No kapt anywhere. |
 | DI | Hilt **2.60.1** | Compile-time graph; first-class injection into Services, BroadcastReceivers, ViewModels and Workers, which this app leans on. Hilt 2.59+ requires AGP 9. Koin's runtime resolution buys nothing here. |
 | UI | Compose BOM **2026.09.00** (Material 3 1.4.0) | 100% Compose. |
-| Navigation | Navigation 3 **1.2.0** (when the second screen lands) | Compose-first, the back stack is plain state the app owns, which fits MVI. |
-| Local data | DataStore **1.3.0** (live session), Room **2.8.5** (history, next revision) | See principle 4. |
-| Background | Foreground service, AlarmManager, WorkManager **2.12.0** | Each has one job; see §5.7. |
+| Navigation | App-owned state: current tab + one pushed screen, `BackHandler` pops | Five tabs and two pushed screens don't need a library; the back stack is plain saveable state, which fits MVI. Navigation 3 when deep links or nested flows arrive. |
+| Local data | DataStore **1.3.0** (live session, preferences), Room **2.8.5** (subjects, focus segments, sessions, tasks, D-Days, allowed apps) | See principle 4. |
+| Background | Foreground service, AlarmManager, WorkManager **2.12.0** | Each has one job; see §5.7. WorkManager runs the 15-minute nudge check (§6.6). |
+| Groups backend | Firebase BoM **35.1.0**: Auth (email/password), Cloud Firestore | Free Spark plan. No google-services plugin: the app build reads `app/google-services.json` if present (§6.6). |
 
 ## 2. Five rules the rest of the design follows
 
@@ -35,25 +36,27 @@ graph TD
   app[":app"]
   subgraph feature
     ftimer[":feature:timer ✅"]
-    fstats[":feature:stats"]
-    fgroups[":feature:groups"]
-    fsubjects[":feature:subjects"]
-    fblocker[":feature:blocker"]
+    fplanner[":feature:planner ✅"]
+    fstats[":feature:stats ✅"]
+    fgroups[":feature:groups ✅"]
+    fsubjects[":feature:subjects ✅"]
+    fblocker[":feature:blocker ✅"]
+    fsettings[":feature:settings ✅"]
     fonboarding[":feature:onboarding"]
   end
   subgraph system["system (Android services)"]
     stimer[":system:timer ✅"]
-    sblocker[":system:blocker"]
-    spresence[":system:presence"]
+    sblocker[":system:blocker ✅"]
+    spresence[":system:presence ✅"]
     swidgets[":system:widgets"]
   end
   subgraph core
     ctimer[":core:timer ✅ pure Kotlin"]
     cdesign[":core:designsystem ✅"]
-    cdata[":core:data"]
-    cdb[":core:database"]
-    cnet[":core:network"]
-    cmodel[":core:model"]
+    cdata[":core:data ✅"]
+    cdb[":core:database ✅"]
+    cnet[":core:network ✅"]
+    cmodel[":core:model ✅ pure Kotlin"]
   end
   app --> feature
   app --> system
@@ -61,14 +64,17 @@ graph TD
   feature --> cdesign
   feature --> cdata
   stimer --> ctimer
+  stimer --> cdata
   sblocker --> cdata
   spresence --> cdata
+  spresence --> cnet
   spresence --> ctimer
   swidgets --> ctimer
   swidgets --> cdata
   cdata --> cdb
-  cdata --> cnet
   cdata --> cmodel
+  cdata --> ctimer
+  cnet --> cmodel
 ```
 
 ✅ = exists in this repository. Everything else is created in the sprint that needs it.
@@ -78,15 +84,15 @@ graph TD
 | `:app` | Android app | `Application`, `MainActivity`, navigation host, the full Hilt graph. |
 | `:core:timer` | Pure Kotlin | Timer engine, state model, snapshot codec, `TimerController` interface and its default implementation, platform ports. Zero Android imports. |
 | `:core:designsystem` | Android + Compose | Theme, typography (tabular clock digits), shared components, Canvas charts (heatmap, rings). |
-| `:core:model` | Pure Kotlin | Domain models shared across features (Subject, StudyGroup, Member). |
-| `:core:database` | Android | Room database, entities, DAOs, migrations. |
-| `:core:network` | Android | Realtime and REST clients, DTOs. |
-| `:core:data` | Android | Repositories; offline-first sync orchestration (WorkManager workers live here). |
+| `:core:model` | Pure Kotlin | Domain models (Subject, StudyTask, DDay, StudySegment, preferences), the study-day clock and all stats maths (per day, per subject, per hour, streaks). JVM-tested. |
+| `:core:database` | Android | Room database, entities, DAOs. |
+| `:core:network` | Android | Firebase Auth and Firestore repositories (groups, presence, chat, nudges). Inert when Firebase isn't configured. |
+| `:core:data` | Android | Repositories, preferences, `RoomStudyRecordSink`, live totals, `SessionLauncher`, installed-apps and blocker-permission helpers. |
 | `:system:timer` | Android | `StudyTimerService`, notifications, alarms, boot handling, DataStore snapshot store, OEM reliability helpers. Binds the `:core:timer` ports to Android. |
-| `:system:blocker` | Android | UsageStats monitor, AccessibilityService, overlay. Attaches to the timer service lifecycle. |
-| `:system:presence` | Android | Lifecycle-aware presence publisher and subscriber. |
-| `:system:widgets` | Android | Jetpack Glance widgets (D-Day, quick start). |
-| `:feature:*` | Android + Compose | One user-facing area each: screens, ViewModels (MVI). |
+| `:system:blocker` | Android | Usage-events foreground detection, the lock overlay, and `AppBlocker`, a projection of timer state (§6.5). No AccessibilityService. |
+| `:system:presence` | Android | `PresencePublisher` (live status to Firestore), `NudgeListener`, `NudgeCheckWorker`. |
+| `:system:widgets` | Android | Jetpack Glance widgets (D-Day, quick start). Not built yet. |
+| `:feature:*` | Android + Compose | One user-facing area each: screens, ViewModels (MVI). timer, planner, stats, subjects, blocker, settings, groups. |
 
 **Dependency rules** (enforced by convention plugins and review):
 - Features never depend on other features or on `:system:*`. They see the timer only through the `TimerController` interface in `:core:timer`; Hilt supplies the implementation from `:system:timer`.
@@ -252,12 +258,60 @@ Layered, cheapest first:
 - **Widget bitmap limit.** `updateAppWidget` throws if a widget's bitmaps exceed `6 × width × height` bytes. Glance widgets will draw with Compose primitives, not bitmaps.
 - **App memory limits.** The long-lived service must not accumulate state; it holds none by design.
 
-## 6. Testing
+## 6. Features built on the timer
+
+Every feature below reads the same two sources: Room segments for finished time, and `TimerController.state` for the live part. `LiveTotals` and `TimerState.unrecordedFocusMs(now)` join them, so the timer screen, planner, stats and group rankings always agree to the second.
+
+### 6.1 Subjects
+
+`subjects` table (name, colour, sort order, archived). Removing a subject archives it: it leaves the pickers but keeps its name and colour in history. Renaming also renames past segments. Colours come from a fixed categorical palette validated for the dark surface (lightness band, chroma, colour-blind separation of neighbours ≥ 8.4 ΔE, 3:1 contrast); a new subject takes the next unused slot, and a colour follows its subject, never its rank. The built-in "General" subject (`subjectId = null`) is always available.
+
+`SessionLauncher` owns "start studying X": resume if X is the paused session, otherwise stop the current session (its time is kept) and start X in the preferred mode (stopwatch, or Pomodoro with the user's lengths).
+
+### 6.2 Planner, to-dos and the daily log
+
+Tasks are rows keyed by study day (`epochDay`), optionally tagged with a subject; the play button on a task starts that subject. The week strip shows studied time and done/total tasks per day. The daily log lists that day's segments with times, and a share bar per subject. Unfinished tasks can be moved to the next day.
+
+### 6.3 Statistics
+
+Day (by hour, rotated to start at the study day's first hour), week and month (by day) views, each with total, average and best day, plus a per-subject breakdown. The consistency heatmap covers 18 weeks with fixed thresholds (none, under 1 h, 1–2 h, 2–4 h, 4 h+) on one blue ramp, and streaks count days with at least one minute of focus (today doesn't break a streak until it's over). All maths lives in `:core:model` and is JVM-tested, including segments that cross the study-day boundary.
+
+### 6.4 D-Day
+
+`ddays` table. The planner manages them; the timer home shows the nearest upcoming one as `Title · D-12`.
+
+### 6.5 App blocking with an allowed-apps list
+
+The user picks the apps they may use while studying; everything else is blocked **only during running focus phases**. Breaks, paused sessions and idle never block (rule 2: `AppBlocker` is a projection of timer state). Always allowed: Lock In, home screens, the dialer, Settings, System UI and the permission controller.
+
+Detection polls `UsageStatsManager.queryEvents` every 800 ms while the screen is on, reading only events since the last poll. A blocked app is covered by a full-screen `TYPE_APPLICATION_OVERLAY` window ("Back to Lock In" / "Go to home screen"; Back goes home). Requires two user-granted permissions: usage access and display over other apps; the settings screen explains both and links to the system pages.
+
+No AccessibilityService: Play restricts it to accessibility tools, and it would let the app read screen content it doesn't need. The cost is up to ~0.8 s before the overlay appears. The process stays alive during sessions because of the timer's foreground service, so no second service is needed.
+
+### 6.6 Study groups (Firebase)
+
+| Collection | Contents | Who can read / write |
+|---|---|---|
+| `presence/{uid}` | name, state (studying, break, paused, idle), subject, `runningSinceMs`, today/week keys and stored totals | any signed-in user / owner |
+| `groups/{id}` | name, code, ownerId, memberIds (max 30) | members / members add or remove only themselves |
+| `groupCodes/{code}` | groupId | get only (no listing) |
+| `groups/{id}/messages` | uid, name, text (≤ 500), sentAt | members |
+| `nudges/{uid}/items` | from, group, sentAt, seen | sender creates as themselves / recipient |
+
+Rules: `firestore.rules`. **Presence is never written per second**: it changes only when something a viewer would see changes (start, pause, phase, a segment closing, day rollover), debounced by 1 s. While studying, viewers compute `todayMs + (now − runningSinceMs)` themselves, so every member's clock ticks live at no write cost (capped at 12 h for a stale record). Rankings (today and this week) use the same values.
+
+Nudges ("shake to wake") arrive as a high-priority notification with a shaking vibration. Delivery is instant while the recipient's process is alive (always the case during a session) and within about 15 minutes otherwise, via `NudgeCheckWorker`. Instant delivery to a closed app would need FCM sent from a Cloud Function, which requires the Blaze plan. Chat is readable and writable only outside running focus phases.
+
+Firebase is optional at build time. Without `app/google-services.json` (git-ignored; CI writes it from the `GOOGLE_SERVICES_JSON` secret) the app builds and runs fully offline and the Groups tab says groups aren't connected. The build reads the JSON directly instead of applying the google-services plugin, which avoids a plugin/AGP 9 compatibility dependency.
+
+## 7. Testing
 
 | Layer | How | Status |
 |---|---|---|
 | Engine | JVM tests with a `FakeClock` that can sleep, jump the wall clock and reboot | 24 tests (19 engine, 5 codec), passing |
 | Controller | JVM tests with fake store, sink, alarm and host: commit order, restore after process death and reboot, alarm projection | 7 tests, passing |
+| Study maths | JVM tests: study-day boundary, split segments, per subject, per hour, streaks, D-Day labels, formats | 8 tests, passing |
+| Whole app | CI emulator run (API 35) walks every screen with `scripts/ui-smoke.sh`, saves screenshots, fails on any crash | Every push |
 | Service, receivers, notification | Instrumented tests | Next sprint |
 | Whole build | GitHub Actions: engine tests + `assembleDebug` on every push to `main`; APK uploaded as a run artifact | Passing |
 
@@ -275,19 +329,23 @@ adb shell am set-standby-bucket app.lockin restricted   # worst-case bucket
 adb reboot                                               # "paused after restart" alert, time up to last heartbeat
 ```
 
-## 7. Open decisions
+## 8. Open decisions
 
-1. **Credit for unobserved time.** If the process dies (same boot) and comes back hours later, the engine currently credits the whole gap, the honest-user default. Because the blocker cannot enforce anything while the process is dead, leaderboard integrity needs more. Recommendation for the blocker revision: on restore after a gap, query `UsageStatsManager` for foreground-app events in the unobserved window and deduct time spent in blocked apps, keeping the engine pure by passing the audit result in as a command.
+1. **Credit for unobserved time.** If the process dies (same boot) and comes back hours later, the engine currently credits the whole gap, the honest-user default. Because the blocker cannot enforce anything while the process is dead, leaderboard integrity needs more. Still open: on restore after a gap, query `UsageStatsManager` for foreground-app events in the unobserved window and deduct time spent in blocked apps, keeping the engine pure by passing the audit result in as a command.
 2. **Play review of `specialUse`.** The subtype text is written for a reviewer. Keep a short screen recording of a session (notification, pause, stop) ready in case review asks for one.
 3. **Kotlin 2.4 with Dagger.** Dagger's bundled Kotlin metadata reader has lagged new Kotlin releases before (google/dagger#5059). The Hilt convention plugin pins `kotlin-metadata-jvm` to our Kotlin version on the KSP classpath as a precaution. If the first sync still complains, temporarily drop Kotlin to 2.3.21.
 4. ~~**APIs to confirm on first build.**~~ Resolved 24 Oct 2026, first CI build. The Android 17 `setExactAndAllowWhileIdle(…, Executor, OnAlarmListener)` overload and `NotificationManager.canPostPromotedNotifications()` compile against SDK 37 as written. `Settings.ACTION_MANAGE_APP_PROMOTED_NOTIFICATIONS` (the name the Live Updates guide uses) does not exist; the SDK constant, added in Android 16, is `Settings.ACTION_APP_NOTIFICATION_PROMOTION_SETTINGS`. CI (`.github/workflows/build-apk.yml`) now runs the engine tests and assembles the debug APK on every push to `main`.
 
-## 8. Next revisions
+5. **Play declarations for blocking.** Usage access and display-over-other-apps both need a clear in-app explanation (done on the Focus protection screen) and may be questioned in review; keep the screen recording from item 2 covering a blocked app.
+6. **Presence visibility.** Any signed-in user can read a presence document if they know the uid. Uids only come from shared groups, but tightening this to "shares a group with me" needs either denormalised member lists on presence or a Cloud Function.
+7. **Schema export.** Room `exportSchema` is off for version 1; turn it on with a `schemas/` directory before the first schema change, and add migration tests.
 
-1. Room schema: `StudySession`, `FocusSegment`, `Subject`, `StudyGroup`, `AppBlacklist`; replaces `LoggingStudyRecordSink` with an upserting sink.
-2. App blocker: UsageStats detection, AccessibilityService and overlay interception, permission flows, the unobserved-gap audit.
-3. Live presence: state-flow strategy, batching, battery and data budget.
-4. Four-sprint MVP roadmap.
+## 9. Next revisions
+
+1. Unobserved-gap audit (open decision 1).
+2. Instant nudges with FCM + a Cloud Function (Blaze plan), and group-scoped presence reads.
+3. Glance widgets: D-Day countdown and quick start (`:system:widgets`).
+4. Onboarding: permissions in context, OEM battery settings (`BackgroundReliability` is ready), first subjects.
 
 ## Sources
 
