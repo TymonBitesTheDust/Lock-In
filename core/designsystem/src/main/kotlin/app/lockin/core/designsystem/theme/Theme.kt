@@ -47,6 +47,9 @@ private val LightColors = lightColorScheme(
     onSurface = Color(0xFF1A1C1F),
     surfaceVariant = Color(0xFFE3E6EC),
     onSurfaceVariant = Color(0xFF44494F),
+    surfaceContainer = Color(0xFFEDEFF3),
+    surfaceContainerHigh = Color(0xFFE6E9EE),
+    outline = Color(0xFF8A9099),
 )
 
 private val BaseTypography = Typography()

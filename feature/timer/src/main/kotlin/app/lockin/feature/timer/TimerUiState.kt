@@ -43,10 +43,12 @@ sealed interface TimerUiState {
 }
 
 sealed interface TimerIntent {
-    data object StartStopwatch : TimerIntent
-    data object StartPomodoro : TimerIntent
+    /** Null starts the built-in "General" subject. */
+    data class StartSubject(val subjectId: Long?) : TimerIntent
     data object Pause : TimerIntent
     data object Resume : TimerIntent
     data object Skip : TimerIntent
     data object Stop : TimerIntent
+    data class SetPomodoro(val enabled: Boolean) : TimerIntent
+    data class AddSubject(val name: String, val color: Int) : TimerIntent
 }
