@@ -31,7 +31,7 @@ Requirements: JDK 17+, an Android Studio release that supports AGP 9.4, Android 
 
 Every push to `main` builds the APK on GitHub Actions (artifact `lock-in-debug-apk`) and runs it on an emulator, walking every screen (`scripts/ui-smoke.sh`).
 
-To publish a release: bump `versionCode` and `versionName` in `app/build.gradle.kts`, update `.github/release-notes.md`, then push a matching tag (`git tag v0.3.0 && git push origin v0.3.0`). The workflow builds, runs the emulator test, and only then attaches `Lock-In.apk` to a new GitHub Release. Debug builds are signed with the shared `keystore/debug.keystore`, so a new APK installs over the old one. Never use that key for release.
+To publish a release: bump `versionCode` and `versionName` in `app/build.gradle.kts`, update `.github/release-notes.md`, and push to `main`. The workflow builds, runs the emulator test, and only then creates release `v<versionName>` with `Lock-In.apk` attached. Pushes that don't change the version never touch an existing release. Debug builds are signed with the shared `keystore/debug.keystore`, so a new APK installs over the old one. Never use that key for release.
 
 ## Firebase (study groups)
 
