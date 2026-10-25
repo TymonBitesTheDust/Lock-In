@@ -87,7 +87,7 @@ The web config is not a secret (it ships in every page); access is controlled by
 `.github/workflows/web.yml` runs on every push to `main` that touches `web/`: typecheck, unit
 tests, end-to-end tests, then deploys `web/dist` to GitHub Pages.
 
-One-time setup: GitHub → **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+GitHub Pages is set to **Source: GitHub Actions** (Settings → Pages); keep it that way.
 
 Installed copies update themselves: the service worker downloads the new version in the
 background and Lock In shows "A new version of Lock In is ready · Reload".
