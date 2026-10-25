@@ -72,6 +72,16 @@ describe('aggregation', () => {
     ]);
   });
 
+  it('per hour survives the repeated hour when DST ends', () => {
+    // Sydney falls back at 03:00 on Sun 5 Apr 2026: 02:00–03:00 happens twice.
+    const start = new Date(2026, 3, 5, 1, 30).getTime();
+    const seg: StudySegment = { sessionId: 's', index: 0, subjectId: 1, subjectName: 'Maths', startWallMs: start, durationMs: 150 * 60_000 };
+    const hours = StudyStats.perHour([seg], 0, Number.MAX_SAFE_INTEGER);
+    expect(hours[1]).toBe(30 * 60_000);
+    expect(hours[2]).toBe(120 * 60_000);
+    expect(hours.reduce((a, b) => a + b, 0)).toBe(150 * 60_000);
+  });
+
   it('per hour splits at the hour', () => {
     const hours = StudyStats.perHour([segment('2026-10-24T09:45:00', 30)], 0, Number.MAX_SAFE_INTEGER);
     expect(hours[9]).toBe(15 * 60_000);

@@ -306,9 +306,10 @@ export const StudyStats = {
       const end = Math.min(segmentEnd(segment), endMs);
       while (cursor < end) {
         const local = new Date(cursor);
-        const hourStart = new Date(cursor);
-        hourStart.setMinutes(0, 0, 0);
-        const stop = Math.min(hourStart.getTime() + 3_600_000, end);
+        // Truncate the instant, not the local time: in a repeated DST hour, setting the local
+        // minutes to 0 would jump back to the first copy of the hour and never move forward.
+        const hourStart = cursor - (local.getMinutes() * 60_000 + local.getSeconds() * 1_000 + local.getMilliseconds());
+        const stop = Math.min(hourStart + 3_600_000, end);
         hours[local.getHours()] += stop - cursor;
         cursor = stop;
       }

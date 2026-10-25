@@ -232,8 +232,11 @@ export function createStore(storage: Storage, time: TimeSource) {
       }
     }
     // 1. Durable records. 2. Snapshot. 3. Publish.
-    if (nextSegments !== segments.value) write(KEYS.segments, nextSegments);
-    if (nextSessions !== sessions.value) write(KEYS.sessions, nextSessions);
+    // If a record can't be written (storage full), stop here like Android does when Room throws:
+    // the old snapshot stays, so the session keeps counting and replays the record later.
+    const recordsSaved =
+      (nextSegments === segments.value || write(KEYS.segments, nextSegments)) && (nextSessions === sessions.value || write(KEYS.sessions, nextSessions));
+    if (!recordsSaved) return;
     if (force || t.state !== previous) {
       try {
         storage.setItem(KEYS.timer, encodeSnapshot(t.state));

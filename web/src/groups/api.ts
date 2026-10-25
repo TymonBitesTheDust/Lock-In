@@ -163,7 +163,10 @@ let loading: Promise<GroupsApi> | null = null;
 export function loadGroupsApi(): Promise<GroupsApi> {
   if (fakeApi) return Promise.resolve(fakeApi);
   if (!firebaseConfig) return Promise.reject(new GroupError('Study groups are not set up for this website.'));
-  loading ??= create(firebaseConfig);
+  loading ??= create(firebaseConfig).catch((e: unknown) => {
+    loading = null; // let "Try again" retry instead of returning the same failure
+    throw e;
+  });
   return loading;
 }
 

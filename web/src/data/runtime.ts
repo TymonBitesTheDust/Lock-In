@@ -23,7 +23,10 @@ function pickStorage(): Storage {
   }
 }
 
-export const store: LockInStore = createStore(pickStorage(), webTimeSource);
+const storage = pickStorage();
+export const store: LockInStore = createStore(storage, webTimeSource);
+// Storage blocked (for example, Safari set to block all cookies): nothing will survive a reload.
+if (storage instanceof MemoryStorage) store.storageError.value = true;
 
 /** True when Lock In was opened from the Home Screen (iOS) or installed (other browsers). */
 export const isStandalone = (): boolean =>
@@ -90,22 +93,39 @@ type WakeLockSentinelLike = { release(): Promise<void>; released: boolean; addEv
 let wakeLock: WakeLockSentinelLike | null = null;
 let wakeLockWanted = false;
 
-async function syncWakeLock() {
+let wakeLockQueue: Promise<void> = Promise.resolve();
+
+/** Requests or releases the lock to match `wakeLockWanted`. Calls run one at a time, so two
+ * quick calls can't both request a lock and lose one of them. */
+function syncWakeLock(): Promise<void> {
+  wakeLockQueue = wakeLockQueue.then(applyWakeLock, applyWakeLock);
+  return wakeLockQueue;
+}
+
+async function applyWakeLock() {
   const nav = navigator as Navigator & { wakeLock?: { request(type: 'screen'): Promise<WakeLockSentinelLike> } };
   if (!nav.wakeLock) return;
   try {
     if (wakeLockWanted && document.visibilityState === 'visible' && (!wakeLock || wakeLock.released)) {
-      wakeLock = await nav.wakeLock.request('screen');
-      wakeLock.addEventListener('release', () => {
-        wakeLock = null;
+      const lock = await nav.wakeLock.request('screen');
+      lock.addEventListener('release', () => {
+        if (wakeLock === lock) wakeLock = null;
       });
+      wakeLock = lock;
+      // Released or no longer wanted while the request was in flight.
+      if (!wakeLockWanted) await syncRelease();
     } else if (!wakeLockWanted && wakeLock) {
-      await wakeLock.release();
-      wakeLock = null;
+      await syncRelease();
     }
   } catch {
-    wakeLock = null;
+    // The browser refused (low battery, not visible): try again on the next change.
   }
+}
+
+async function syncRelease() {
+  const lock = wakeLock;
+  wakeLock = null;
+  await lock?.release().catch(() => {});
 }
 
 export const wakeLockSupported = (): boolean => typeof navigator !== 'undefined' && 'wakeLock' in navigator;
