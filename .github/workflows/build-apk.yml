@@ -3,6 +3,8 @@ name: Build APK
 on:
   push:
     branches: [main]
+    # The web app (web/) has its own workflow, web.yml.
+    paths-ignore: ['web/**', '.github/workflows/web.yml']
     # Pushing a tag like v0.2.0 also publishes a GitHub Release with the APK (see the release job).
     tags: ['v*']
   workflow_dispatch:

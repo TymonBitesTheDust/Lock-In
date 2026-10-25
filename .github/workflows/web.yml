@@ -1,0 +1,92 @@
+name: Web app (iPhone)
+
+# Tests the web app in WebKit (Safari's engine) on an iPhone-sized screen, then publishes it to
+# GitHub Pages: https://<owner>.github.io/<repo>/
+# One-time setup: Settings → Pages → Build and deployment → Source: GitHub Actions.
+
+on:
+  push:
+    branches: [main]
+    paths: ['web/**', 'firestore.rules', '.github/workflows/web.yml']
+  pull_request:
+    paths: ['web/**', 'firestore.rules', '.github/workflows/web.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+
+      - name: Typecheck and unit tests (timer engine, stats, storage)
+        run: |
+          npm run typecheck
+          npm test
+
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: End-to-end tests, iPhone 15 screen
+        run: |
+          npm run build
+          BROWSER=chromium npm run e2e
+
+      - name: End-to-end tests in WebKit (Safari's engine)
+        # Reported, not required: WebKit on Linux is close to iPhone Safari but not identical.
+        continue-on-error: true
+        run: SCREENSHOTS=screenshots npm run e2e
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-screenshots
+          path: web/screenshots
+          if-no-files-found: ignore
+
+      - name: Build for GitHub Pages
+        # The Firebase web config isn't secret (it ships in every page), but keeping it in a
+        # secret matches the Android build. Without it, the Groups tab says groups aren't set up.
+        env:
+          VITE_FIREBASE_CONFIG: ${{ secrets.FIREBASE_WEB_CONFIG }}
+        run: |
+          if [ -z "$VITE_FIREBASE_CONFIG" ]; then echo "::notice::No FIREBASE_WEB_CONFIG secret; building without study groups"; fi
+          npm run build
+
+      - uses: actions/upload-pages-artifact@v5
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        with:
+          path: web/dist
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
