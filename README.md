@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/TymonBitesTheDust/Lock-In/releases/latest/download/Lock-In.apk"><b>Download the APK</b></a>
+  &nbsp;·&nbsp; <a href="https://tymonbitesthedust.github.io/Lock-In/"><b>Open on iPhone</b></a>
   &nbsp;·&nbsp; <a href="#a-quick-tour">Tour</a>
   &nbsp;·&nbsp; <a href="#how-it-works">How it works</a>
   &nbsp;·&nbsp; <a href="docs/ARCHITECTURE.md">Architecture</a>
@@ -11,7 +12,7 @@
 
 # Lock In
 
-**Lock In** is a focus and study-tracking app for Android, inspired by Yeolpumta (YPT). Pick a subject, tap start and put your phone down. Lock In counts every second you study, even with the screen off. While you focus it blocks the apps that distract you, and it plans your week around your exams. It also shows how much you actually studied, on your own or next to your friends.
+**Lock In** is a focus and study-tracking app for Android and iPhone, inspired by Yeolpumta (YPT). Pick a subject, tap start and put your phone down. Lock In counts every second you study, even with the screen off. While you focus it blocks the apps that distract you, and it plans your week around your exams. It also shows how much you actually studied, on your own or next to your friends.
 
 It's built for long study sessions: a calm, dark-friendly design, no ads, and nothing leaves your phone unless you join a study group.
 
@@ -20,6 +21,21 @@ It's built for long study sessions: a calm, dark-friendly design, no ads, and no
 **[Download the latest APK](https://github.com/TymonBitesTheDust/Lock-In/releases/latest/download/Lock-In.apk)** (Android 8.0+) · [All releases](https://github.com/TymonBitesTheDust/Lock-In/releases)
 
 On your phone, open the file and allow your browser to install unknown apps when asked. New versions install over the old one and keep your data.
+
+### iPhone and iPad
+
+**[Open Lock In](https://tymonbitesthedust.github.io/Lock-In/)** in Safari (iOS 16 or later), tap **Share** → **Add to Home Screen**, then open it from your Home Screen. No App Store and no account needed; it also works offline and on any computer.
+
+<p align="center">
+  <img src="docs/images/iphone.png" alt="Lock In on an iPhone-sized screen: timer home, a running session, the planner and weekly stats" width="880">
+</p>
+
+It's the same app: stopwatch and Pomodoro with the same timer rules, planner, D-Days, stats and study groups, and iPhone and Android friends can be in the same group. Two things work differently because iOS doesn't allow them for apps outside the App Store:
+
+- **App blocking.** iPhone apps can't block other apps without Apple's Screen Time permission. Lock In walks you through a *Study* Focus and Screen Time limits instead, and can switch the Focus on and off for you with a Shortcut.
+- **Alerts.** Time always keeps counting, but the end-of-round chime plays only while Lock In is open. It can keep the screen on during a session.
+
+How it's built: [web/README.md](web/README.md).
 
 ## A quick tour
 
@@ -181,6 +197,7 @@ Without Firebase the app works fully; the Groups tab says groups aren't connecte
 2. Authentication → Sign-in method → enable **Email/Password**.
 3. Firestore Database → create (production mode) → **Rules** → paste [`firestore.rules`](firestore.rules) → Publish.
 4. Local builds: put the file at `app/google-services.json` (git-ignored). CI: save its contents as the repository secret `GOOGLE_SERVICES_JSON`.
+5. For iPhone (the web app): add a **Web** app to the same project and save its config as the repository secret `FIREBASE_WEB_CONFIG`. Steps in [web/README.md](web/README.md#study-groups-firebase).
 
 Everything runs on the free Spark plan. Nudges arrive instantly while the friend's app is running and within about 15 minutes otherwise; instant delivery to a closed app needs FCM from a Cloud Function (Blaze plan).
 
@@ -199,5 +216,6 @@ system/timer/         StudyTimerService, notifications, alarms, receivers, DataS
 system/blocker/       Foreground-app detection and the lock overlay
 system/presence/      Live status publishing, nudge notifications and background check
 feature/*             timer, planner, stats, subjects, blocker, settings, groups
+web/                  iPhone / web app: TypeScript port of the timer engine and stats, Preact UI, PWA
 docs/                 Architecture and README images
 ```

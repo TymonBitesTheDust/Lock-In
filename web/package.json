@@ -1,0 +1,29 @@
+{
+  "name": "lock-in-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Lock In for iPhone and any browser: an installable web app sharing the Android app's timer rules and study groups.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "e2e": "node e2e/smoke.mjs && node e2e/groups.mjs",
+    "e2e:smoke": "node e2e/smoke.mjs",
+    "e2e:groups": "node e2e/groups.mjs"
+  },
+  "dependencies": {
+    "@preact/signals": "^2.11.3",
+    "firebase": "^13.1.0",
+    "preact": "^10.29.8"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.6",
+    "playwright": "^1.63.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}
