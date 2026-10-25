@@ -41,6 +41,9 @@ function serviceWorker(): Plugin {
         .sort();
       const hash = createHash('sha256').update(files.join('\n'));
       for (const item of Object.values(bundle)) hash.update(item.type === 'chunk' ? item.code : typeof item.source === 'string' ? item.source : Buffer.from(item.source));
+      // index.html and public/ may be emitted after this hook runs, so hash their sources too.
+      hash.update(readFileSync(join(import.meta.dirname, 'index.html')));
+      for (const file of walk(publicDir)) hash.update(readFileSync(join(publicDir, file)));
       const version = hash.digest('hex').slice(0, 12);
       const template = readFileSync(join(import.meta.dirname, 'src/sw-template.js'), 'utf8');
       this.emitFile({

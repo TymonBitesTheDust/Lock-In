@@ -69,6 +69,11 @@ export function App() {
 
   const update = useUpdateBanner();
 
+  const storageError = store.storageError.value;
+  useEffect(() => {
+    if (storageError) showToast("This browser isn't saving Lock In's data. Turn off Private Browsing or free up storage, or it'll be gone when you close Lock In.", { duration: 0 });
+  }, [storageError]);
+
   let screen;
   if (pushed === 'subjects') screen = <SubjectsScreen onBack={() => setPushed(null)} />;
   else if (pushed === 'focus') screen = <FocusScreen onBack={() => setPushed(null)} />;

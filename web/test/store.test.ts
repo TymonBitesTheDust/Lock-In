@@ -134,6 +134,28 @@ describe('store', () => {
     expect(s.subjects.value).toHaveLength(1);
   });
 
+  it('keeps the old snapshot when a record can\'t be written', () => {
+    const s = createStore(storage, time);
+    s.restore();
+    s.startOrResume(null);
+    const snapshot = storage.getItem(KEYS.timer);
+    const original = storage.setItem.bind(storage);
+    storage.setItem = (key: string, value: string) => {
+      if (key === KEYS.segments) throw new DOMException('quota', 'QuotaExceededError');
+      original(key, value);
+    };
+    now += 20 * MINUTE;
+    s.dispatch(Commands.pause);
+    expect(s.storageError.value).toBe(true);
+    expect(storage.getItem(KEYS.timer)).toBe(snapshot);
+    expect(s.timer.value.kind === 'active' && s.timer.value.run.kind).toBe('running');
+
+    // Storage frees up: the next command records the full stretch.
+    storage.setItem = original;
+    s.dispatch(Commands.pause);
+    expect(s.segments.value.map((x) => x.durationMs)).toEqual([20 * MINUTE]);
+  });
+
   it('announces a boundary as fresh only if it just happened', () => {
     const s = createStore(storage, time);
     s.restore();

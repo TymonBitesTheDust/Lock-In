@@ -53,7 +53,11 @@ function wire(a: GroupsApi) {
     groupsState.account.value = account;
     offGroups?.();
     offNudges?.();
-    offGroups = offNudges = null;
+    offPresence?.();
+    offGroups = offNudges = offPresence = null;
+    // Firestore ends listeners when you sign out; start presence afresh for the next account.
+    presenceKey = '';
+    groupsState.presence.value = new Map();
     if (!account) {
       groupsState.groups.value = [];
       groupsState.nudges.value = [];

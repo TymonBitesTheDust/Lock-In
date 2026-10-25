@@ -87,7 +87,7 @@ The web config is not a secret (it ships in every page); access is controlled by
 `.github/workflows/web.yml` runs on every push to `main` that touches `web/`: typecheck, unit
 tests, end-to-end tests, then deploys `web/dist` to GitHub Pages.
 
-One-time setup: GitHub → **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+GitHub Pages is set to **Source: GitHub Actions** (Settings → Pages); keep it that way.
 
 Installed copies update themselves: the service worker downloads the new version in the
 background and Lock In shows "A new version of Lock In is ready · Reload".
@@ -97,6 +97,7 @@ background and Lock In shows "A new version of Lock In is ready · Reload".
 - **Add to Home Screen.** Safari may clear data for sites not opened for 7 days; Home Screen
   apps are exempt. Settings shows a banner with the steps until Lock In runs from the Home Screen.
 - **Home Screen and Safari keep separate storage** on iOS, so people should use one of them.
+- **Keep screen on** uses the Screen Wake Lock API (Safari 16.4+). Older iOS versions may ignore it in Home Screen apps; the timer is unaffected either way.
 - **Audio** only plays from a context started by a tap, so the chime is unlocked when a session is
   started or resumed.
 - **Shortcuts:** `shortcuts://run-shortcut?name=…` opens the Shortcuts app; Lock In uses it only

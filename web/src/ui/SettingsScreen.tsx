@@ -343,10 +343,10 @@ export function InstallScreen({ onBack }: { onBack: () => void }) {
                 Open this page in <b>Safari</b>.
               </li>
               <li>
-                Tap the <b>Share</b> button <Icon name="share" class="small" /> (at the bottom, or next to the address bar).
+                Tap <b>⋯</b> next to the address bar, then <b>Share</b>. On older iPhones, tap the <b>Share</b> button <Icon name="share" class="small" /> at the bottom.
               </li>
               <li>
-                Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>.
+                Scroll down and tap <b>Add to Home Screen</b>. Keep <b>Open as Web App</b> on, then tap <b>Add</b>.
               </li>
               <li>Open Lock In from your Home Screen from now on.</li>
             </ol>
