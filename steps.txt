@@ -1,0 +1,73 @@
+shot: 01-timer-empty
+tapped: text="Add" bounds="[929,747][995,800]"
+tapped: class="android.widget.EditText" bounds="[183,932][897,1100]"
+tapped: text="Save" bounds="[781,1160][861,1213]"
+tapped: text="Add" bounds="[929,747][995,800]"
+tapped: class="android.widget.EditText" bounds="[183,932][897,1100]"
+tapped: text="Save" bounds="[781,1160][861,1213]"
+shot: 02-timer-subjects
+tapped: content-desc="Start Maths" bounds="[912,905][975,968]"
+shot: 03-session-running
+shot: 04-notification
+tapped: text="Pause" bounds="[397,1388][499,1441]"
+shot: 05-session-paused
+tapped: text="Stop" bounds="[648,1431][724,1484]"
+tapped: text="Pomodoro 25 / 5" bounds="[647,558][919,611]"
+tapped: content-desc="Start Physics" bounds="[912,1083][975,1146]"
+shot: 06-pomodoro-running
+tapped: text="Stop" bounds="[747,1415][823,1468]"
+tapped: text="Stopwatch" bounds="[210,558][384,611]"
+shot: 07-timer-after-sessions
+tapped: text="Planner" bounds="[262,2253][378,2295]"
+tapped: class="android.widget.EditText" bounds="[42,1162][1038,1309]"
+tapped: text="Add" bounds="[940,870][1006,923]"
+tapped: class="android.widget.EditText" bounds="[183,1038][897,1206]"
+tapped: text="Save" bounds="[781,1054][861,1107]"
+shot: 08-planner
+tapped: text="Stats" bounds="[501,2253][580,2295]"
+shot: 09-stats
+shot: 10-stats-scrolled
+tapped: text="Groups" bounds="[706,2253][814,2295]"
+shot: 11-groups
+tapped: text="Settings" bounds="[917,2253][1043,2295]"
+shot: 12-settings
+tapped: text="Focus protection" bounds="[84,546][419,609]"
+tapped: checkable="true" bounds="[859,359][996,485]"
+tapped: class="android.widget.EditText" bounds="[42,929][1038,1076]"
+tapped: text="Calendar" bounds="[179,1145][356,1208]"
+tapped: class="android.widget.EditText" bounds="[42,929][1038,1076]"
+tapped: text="Contacts" bounds="[179,1145][359,1208]"
+tapped: class="android.widget.EditText" bounds="[42,929][1038,1076]"
+shot: 13-focus-protection-on
+tapped: text="Timer" bounds="[55,2253][144,2295]"
+tapped: content-desc="Start Maths" bounds="[912,1052][975,1115]"
+shot: 14-blocked-app
+tapped: content-desc="Back to Lock In" bounds="[63,2138][1017,2285]"
+shot: 15-back-to-lock-in
+shot: 16-home-covered
+tapped: content-desc="Calendar" bounds="[302,594][540,861]"
+shot: 17-allowed-app-opened
+tapped: text="Stop" bounds="[632,1388][708,1441]"
+shot: 18-timer-home
+shot: 19-dark-timer
+tapped: text="Stats" bounds="[501,2253][580,2295]"
+shot: 20-dark-stats
+tapped: text="Planner" bounds="[262,2253][378,2295]"
+shot: 21-dark-planner
+tapped: text="Settings" bounds="[917,2253][1043,2295]"
+tapped: content-desc="Orange" bounds="[236,1224][388,1350]"
+shot: 22-settings-orange
+tapped: text="Dark" bounds="[805,1009][882,1062]"
+shot: 23-settings-orange-dark
+tapped: text="Timer" bounds="[55,2253][144,2295]"
+shot: 24-timer-orange-dark
+tapped: content-desc="Start Maths" bounds="[912,1052][975,1115]"
+shot: 25-blocked-orange-dark
+tapped: text="Stop" bounds="[632,1388][708,1441]"
+tapped: text="Stats" bounds="[501,2253][580,2295]"
+shot: 26-stats-orange-dark
+tapped: text="Settings" bounds="[917,2253][1043,2295]"
+tapped: text="Light" bounds="[499,1009][582,1062]"
+shot: 27-settings-orange-light
+tapped: text="System" bounds="[175,1009][299,1062]"
+tapped: content-desc="Blue" bounds="[84,1224][236,1350]"

@@ -1,0 +1,131 @@
+10-26 01:31:36.400   559   591 W SystemServiceManager: Service com.android.server.voiceinteraction.VoiceInteractionManagerService took 87 ms in onUnlockingUser-0
+10-26 01:31:36.476   559   591 W SystemServiceManager: Service com.android.server.credentials.CredentialManagerService took 51 ms in onUnlockingUser-0
+10-26 01:31:39.111  1365  1482 W .apps.wellbeing: Long monitor contention with owner Blocking Thread #2 (1455) at android.content.IContentProvider android.app.ActivityThread.acquireProvider(android.content.Context, java.lang.String, int, boolean)(ActivityThread.java:7861) waiters=0 in android.content.IContentProvider android.app.ActivityThread.acquireProvider(android.content.Context, java.lang.String, int, boolean) for 2.531s
+10-26 01:31:39.460  1864  1864 W app.lockin: Unexpected CPU variant for x86: x86_64.
+10-26 01:31:39.460  1864  1864 W app.lockin: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, default
+10-26 01:31:40.332  1864  1864 W ziparchive: Unable to open '/data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.dm': No such file or directory
+10-26 01:31:40.332  1864  1864 W ziparchive: Unable to open '/data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.dm': No such file or directory
+10-26 01:31:40.499   559   581 E AppHibernationService: Package app.lockin is not installed for user 0
+10-26 01:31:40.499   559   581 E AppHibernationService: Package app.lockin is not installed for any user
+10-26 01:31:40.499   559   581 E AppHibernationService: Package app.lockin is not installed for user 0
+10-26 01:31:40.499   559   581 E AppHibernationService: Package app.lockin is not installed for any user
+10-26 01:31:40.993   559   572 W system_server: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:31:42.714  1864  1864 W app.lockin: Accessing hidden method Landroid/os/SystemProperties;->addChangeCallback(Ljava/lang/Runnable;)V (unsupported, reflection, allowed)
+10-26 01:31:42.807   559  1650 W InputManager-JNI: Input channel object '664b65d Splash Screen app.lockin (client)' was disposed without first being removed with the input manager!
+10-26 01:31:43.106   559   579 W ziparchive: Unable to open '/data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.dm': No such file or directory
+10-26 01:31:44.142   559  1667 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:31:44.459  1223  1809 W FontLog : No resolver, short-circuit {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false} for app.lockin to failure [CONTEXT service_id=132 ]
+10-26 01:31:46.430  1459  1472 W ogle.android.as: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:31:47.860   559  1666 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:31:49.610  1565  1820 W earchbox:search: Long monitor contention with owner UserFacingBlocking0 (2316) at android.accounts.Account com.google.android.apps.gsa.search.core.google.gaia.bh.L(java.lang.String)(PG:43) waiters=1 in android.accounts.Account com.google.android.apps.gsa.search.core.google.gaia.bh.k() for 192ms
+10-26 01:31:50.995  1864  1864 W app.lockin: Verification of androidx.core.view.accessibility.AccessibilityNodeInfoCompat$StructuredDataInfoCompat androidx.core.view.accessibility.AccessibilityNodeInfoCompat.getStructuredDataInfo() took 115.859ms (267.57 bytecodes/s) (3336B approximate peak alloc)
+10-26 01:31:51.681  1190  1196 W s.nexuslauncher: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:31:53.551  1864  1864 W app.lockin: Verification of kotlin.Unit androidx.compose.foundation.text.BasicTextFieldKt.BasicTextField$lambda$11$0$0(androidx.compose.foundation.interaction.MutableInteractionSource, androidx.compose.foundation.text.input.TextFieldLineLimits, androidx.compose.ui.text.TextStyle, androidx.compose.foundation.text.input.internal.TextLayoutState, boolean, androidx.compose.foundation.text.input.internal.selection.TextFieldSelectionState$InputType, androidx.compose.foundation.text.input.internal.TransformedTextFieldState, androidx.compose.foundation.text.input.internal.selection.TextFieldSelectionState, androidx.compose.ui.graphics.Brush, boolean, boolean, androidx.compose.foundation.ScrollState, androidx.compose.foundation.gestures.Orientation, androidx.compose.foundation.text.contextmenu.modifier.ToolbarRequesterImpl, androidx.compose.foundation.text.selection.PlatformSelectionBehaviors, kotlin.jvm.functions.Function2, androidx.compose.foundation.text.KeyboardOptions, androidx.compose.runtime.Composer, int) took 104.335ms (6996.65 bytecodes/s) (21288B approximate peak alloc)
+10-26 01:31:53.672  1864  1864 W app.lockin: Verification of androidx.compose.runtime.DisposableEffectResult androidx.compose.foundation.text.CoreTextFieldKt.CoreTextField$lambda$18$0(androidx.compose.foundation.text.LegacyTextFieldState, androidx.compose.ui.text.input.TextInputService, androidx.compose.ui.text.input.TextFieldValue, androidx.compose.ui.text.input.ImeOptions, androidx.compose.runtime.DisposableEffectScope) took 116.806ms (419.50 bytecodes/s) (3528B approximate peak alloc)
+10-26 01:31:53.945  1864  1864 W app.lockin: Verification of androidx.compose.ui.Modifier androidx.compose.foundation.text.TextFieldCursorKt.cursor$lambda$0(androidx.compose.ui.graphics.Brush, androidx.compose.foundation.text.LegacyTextFieldState, androidx.compose.ui.text.input.TextFieldValue, androidx.compose.ui.text.input.OffsetMapping, androidx.compose.ui.Modifier, androidx.compose.runtime.Composer, int) took 133.873ms (2838.50 bytecodes/s) (10376B approximate peak alloc)
+10-26 01:31:54.137  1864  1864 W app.lockin: Verification of void androidx.compose.foundation.text.contextmenu.internal.DefaultTextContextMenuDropdownProvider_androidKt.OpenContextMenu(androidx.compose.foundation.text.contextmenu.data.TextContextMenuSession, androidx.compose.foundation.text.contextmenu.provider.TextContextMenuDataProvider, kotlin.jvm.functions.Function0, androidx.compose.runtime.Composer, int) took 129.713ms (2505.52 bytecodes/s) (11568B approximate peak alloc)
+10-26 01:31:55.695   559  1656 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:31:57.947   912   919 W ndroid.systemui: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:31:58.286   559  1564 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:31:58.336   559   641 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:31:59.251  1489  1496 W gle.android.gms: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:31:59.771  1190  1196 W s.nexuslauncher: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:32:00.569  1864  1864 W InteractionJankMonitor: Initializing without READ_DEVICE_CONFIG permission. enabled=true, interval=1, missedFrameThreshold=3, frameTimeThreshold=64, package=app.lockin
+10-26 01:32:07.150   559   648 W InputManager-JNI: Input channel object '7767c2c app.lockin/app.lockin.MainActivity (client)' was disposed without first being removed with the input manager!
+10-26 01:32:07.205  1565  3061 W earchbox:search: Long monitor contention with owner Blocking Thread #25 (3069) at java.io.File android.app.ContextImpl.getFilesDir()(ContextImpl.java:855) waiters=0 in java.io.File android.app.ContextImpl.getFilesDir() for 505ms
+10-26 01:32:07.780   559  1647 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:32:09.877  1489  1496 W gle.android.gms: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:32:10.226  1190  1196 W s.nexuslauncher: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:32:10.890  1864  1864 E FrameTracker: force finish cuj, time out: J<IME_INSETS_SHOW_ANIMATION::0@1@app.lockin>
+10-26 01:32:12.196   559  1666 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:32:12.794  1091  1098 W ndroid.settings: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:32:15.594   559  1222 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:32:15.598   559  1233 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:32:16.454  1864  1864 W FrameTracker: Missed App frame:UNKNOWN: 74, 5754, 0, CUJ=J<IME_INSETS_SHOW_ANIMATION::0@1@app.lockin>
+10-26 01:32:16.455  1864  1864 W FrameTracker: Missed SF frame:UNKNOWN: 74, 5754, 0, CUJ=J<IME_INSETS_SHOW_ANIMATION::0@1@app.lockin>
+10-26 01:32:17.294  1365  1371 W .apps.wellbeing: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:32:21.585  3495  3748 W .apps.messaging: Long monitor contention with owner Blocking Thread #3 (3701) at java.lang.Object eaaq.b()(PG:46) waiters=0 in java.lang.Object eaaq.b() for 192ms
+10-26 01:32:21.660  1489  1496 W gle.android.gms: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:32:22.100   559  1651 W InputManager-JNI: Input channel object 'e106e app.lockin/app.lockin.MainActivity (client)' was disposed without first being removed with the input manager!
+10-26 01:32:22.531   559  1563 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:32:22.976  3495  3691 E BlockableFutures: Cannot block on non-blocking thread
+10-26 01:32:22.976  3495  3691 E BlockableFutures: java.lang.IllegalStateException: Cannot block on non-blocking thread: BG Thread #2
+10-26 01:32:29.414   559   572 W system_server: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:32:33.853  1091  1098 W ndroid.settings: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:32:35.546  3495  3702 W .apps.messaging: Long monitor contention with owner Blocking Thread #9 (4006) at java.lang.Object ddfw.a(java.lang.String)(PG:52) waiters=0 in java.lang.Object ddfw.a(java.lang.String) for 155ms
+10-26 01:32:36.465  3495  3712 W .apps.messaging: Long monitor contention with owner Blocking Thread #5 (3703) at java.lang.Object ddhi.f()(PG:538) waiters=0 in java.lang.Object ddhi.f() for 145ms
+10-26 01:32:39.981   559  1652 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:32:41.474  1091  1098 W ndroid.settings: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:32:46.098  1190  1196 W s.nexuslauncher: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:32:58.538  1489  1496 W gle.android.gms: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:33:03.484   559   572 W system_server: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:33:18.932   559  1582 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:33:18.934   559  1560 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:33:23.148   559  1026 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:33:24.808  1864  1864 W FrameTracker: Missed App frame:UNKNOWN: 74, 9624, 0, CUJ=J<IME_INSETS_SHOW_ANIMATION::0@1@app.lockin>
+10-26 01:33:24.808  1864  1864 W FrameTracker: Missed SF frame:UNKNOWN: 74, 9624, 0, CUJ=J<IME_INSETS_SHOW_ANIMATION::0@1@app.lockin>
+10-26 01:33:27.406   559   642 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:33:30.657   559   642 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:33:30.661   559  1558 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:33:34.985  1864  1864 E FrameTracker: force finish cuj, time out: J<IME_INSETS_HIDE_ANIMATION::1@1@app.lockin>
+10-26 01:33:35.314   559  1655 W InputManager-JNI: Input channel object '1b33ed2 app.lockin/app.lockin.MainActivity (client)' was disposed without first being removed with the input manager!
+10-26 01:33:35.715   559  1656 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:33:40.431   559  1026 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:33:41.357  1864  1864 E FrameTracker: force finish cuj, time out: J<IME_INSETS_SHOW_ANIMATION::0@1@app.lockin>
+10-26 01:33:43.172  1864  1864 W app.lockin: Accessing hidden method Landroid/view/ViewTreeObserver;->dispatchOnScrollChanged()V (unsupported, reflection, allowed)
+10-26 01:33:46.966  1864  1967 W app.lockin: Cleared Reference was only reachable from finalizer (only reported once)
+10-26 01:34:04.679   559  1222 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:34:15.271  1864  1864 E FrameTracker: force finish cuj, time out: J<IME_INSETS_SHOW_ANIMATION::0@1@app.lockin>
+10-26 01:34:16.211  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/Camera2/Camera2.apk' with 1 weak references
+10-26 01:34:16.211  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~os6V9pMS3iGNJTvQIOZdXQ==/com.android.chrome-1P6pYRPAtiltc8IPFcymtg==/Chrome.apk' with 1 weak references
+10-26 01:34:16.212  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~B5piu1BW6-iRHwqS11PzUw==/com.google.android.trichromelibrary_636771938-WuRuSdS5iGYncBjkNMZezg==/TrichromeLibrary.apk' with 1 weak references
+10-26 01:34:16.212  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /system_ext/priv-app/SettingsGoogle/SettingsGoogle.apk' with 1 weak references
+10-26 01:34:16.216  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '/product/overlay/SettingsGoogle__sdk_gphone64_x86_64__auto_generated_rro_product.apk' with 1 weak references
+10-26 01:34:16.216  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/Drive/Drive.apk' with 1 weak references
+10-26 01:34:16.216  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/Maps/Maps.apk' with 1 weak references
+10-26 01:34:16.217  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/priv-app/PrebuiltBugle/PrebuiltBugle.apk' with 1 weak references
+10-26 01:34:16.217  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/Photos/Photos.apk' with 1 weak references
+10-26 01:34:16.218  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/CalendarGooglePrebuilt/CalendarGooglePrebuilt.apk' with 1 weak references
+10-26 01:34:16.218  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/GoogleContacts/GoogleContacts.apk' with 1 weak references
+10-26 01:34:16.221  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/PrebuiltDeskClockGoogle/PrebuiltDeskClockGoogle.apk' with 1 weak references
+10-26 01:34:16.221  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/priv-app/GoogleDialer/GoogleDialer.apk' with 1 weak references
+10-26 01:34:16.222  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/PrebuiltGmail/PrebuiltGmail.apk' with 1 weak references
+10-26 01:34:16.222  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/YouTube/YouTube.apk' with 1 weak references
+10-26 01:34:16.225  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/priv-app/SafetyHubPrebuilt/SafetyHubPrebuilt.apk' with 1 weak references
+10-26 01:34:16.225  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /system/priv-app/DocumentsUIGoogle/DocumentsUIGoogle.apk' with 1 weak references
+10-26 01:34:16.226  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/priv-app/Velvet/Velvet.apk' with 1 weak references
+10-26 01:34:27.797   559   960 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:34:34.653   559   572 W system_server: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:34:36.768  1864  1864 E FrameTracker: force finish cuj, time out: J<IME_INSETS_HIDE_ANIMATION::1@1@app.lockin>
+10-26 01:34:39.301   559  1643 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:34:44.591   559   960 W InputManager-JNI: Input channel object '2509184 app.lockin (client)' was disposed without first being removed with the input manager!
+10-26 01:34:44.970   559   579 W ziparchive: Unable to open '/data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.dm': No such file or directory
+10-26 01:34:45.060   559  1026 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:34:49.511  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/YouTubeMusicPrebuilt/YouTubeMusicPrebuilt.apk' with 1 weak references
+10-26 01:34:49.512  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/priv-app/GoogleDialer/GoogleDialer.apk' with 1 weak references
+10-26 01:34:49.512  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/GoogleContacts/GoogleContacts.apk' with 1 weak references
+10-26 01:34:49.512  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/CalendarGooglePrebuilt/CalendarGooglePrebuilt.apk' with 1 weak references
+10-26 01:34:50.800   559  1582 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:34:52.312  1190  1196 W s.nexuslauncher: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:34:57.129   559  1647 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:34:57.206   559  1026 W InputManager-JNI: Input channel object 'fbdb208 app.lockin (client)' was disposed without first being removed with the input manager!
+10-26 01:35:03.753   559   579 W ziparchive: Unable to open '/data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.dm': No such file or directory
+10-26 01:35:03.905   559  1656 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:35:10.820   559  1558 W InputManager-JNI: Input channel object '8a658bd app.lockin/app.lockin.MainActivity (client)' was disposed without first being removed with the input manager!
+10-26 01:35:10.865   559  1645 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:35:11.296   559  1582 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:35:26.930   559  1645 W InputManager-JNI: Input channel object '95d118f app.lockin/app.lockin.MainActivity (client)' was disposed without first being removed with the input manager!
+10-26 01:35:26.998   559  1564 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:35:27.313  1190  1196 W s.nexuslauncher: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:35:27.409   559  1026 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:35:27.529  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/priv-app/GoogleDialer/GoogleDialer.apk' with 1 weak references
+10-26 01:35:27.530  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/GoogleContacts/GoogleContacts.apk' with 1 weak references
+10-26 01:35:27.531  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/CalendarGooglePrebuilt/CalendarGooglePrebuilt.apk' with 1 weak references
+10-26 01:35:27.593   912   919 W ndroid.systemui: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.apk' with 1 weak references
+10-26 01:35:55.568   559  1647 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:36:00.605   559   579 W ziparchive: Unable to open '/data/app/~~xfKfq6CFp5yQSMuv3_tdlA==/app.lockin-tYHGuEuuZnx4aUagc6jdHw==/base.dm': No such file or directory
+10-26 01:36:01.021   559  1026 W InputManager-JNI: Input channel object 'eaa9a7f app.lockin (client)' was disposed without first being removed with the input manager!
+10-26 01:36:01.064   559  1582 W PackageConfigPersister: App-specific configuration not found for packageName: app.lockin and userId: 0
+10-26 01:36:13.629  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/priv-app/GoogleDialer/GoogleDialer.apk' with 1 weak references
+10-26 01:36:13.629  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/GoogleContacts/GoogleContacts.apk' with 1 weak references
+10-26 01:36:13.629  1864  1969 W app.lockin: ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/CalendarGooglePrebuilt/CalendarGooglePrebuilt.apk' with 1 weak references
