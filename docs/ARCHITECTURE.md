@@ -274,7 +274,7 @@ Tasks are rows keyed by study day (`epochDay`), optionally tagged with a subject
 
 ### 6.3 Statistics
 
-Day (by hour, rotated to start at the study day's first hour), week and month (by day) views, each with total, average and best day, plus a per-subject breakdown. The consistency heatmap covers 18 weeks with fixed thresholds (none, under 1 h, 1–2 h, 2–4 h, 4 h+) on one blue ramp, and streaks count days with at least one minute of focus (today doesn't break a streak until it's over). All maths lives in `:core:model` and is JVM-tested, including segments that cross the study-day boundary.
+Day (by hour, rotated to start at the study day's first hour), week and month (by day) views, each with total, average and best day, plus a per-subject breakdown. The consistency heatmap covers 18 weeks with fixed thresholds (none, under 1 h, 1–2 h, 2–4 h, 4 h+) on one ramp of the accent colour (§6.6), and streaks count days with at least one minute of focus (today doesn't break a streak until it's over). All maths lives in `:core:model` and is JVM-tested, including segments that cross the study-day boundary.
 
 ### 6.4 D-Day
 
