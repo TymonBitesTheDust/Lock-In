@@ -160,6 +160,122 @@ export interface StudySegment {
 /** Defined from the duration, never from a second wall-clock reading. */
 export const segmentEnd = (s: StudySegment): number => s.startWallMs + s.durationMs;
 
+// region Appearance
+
+export type ThemeMode = 'system' | 'light' | 'dark';
+export const THEME_MODES: readonly ThemeMode[] = ['system', 'light', 'dark'];
+
+/** The accent-coloured parts of one theme. Surfaces and text stay neutral in every accent. */
+export interface AccentTones {
+  readonly primary: string;
+  readonly onPrimary: string;
+  readonly primaryContainer: string;
+  readonly onPrimaryContainer: string;
+  /** Selection containers: segmented buttons, tonal buttons. */
+  readonly selection: string;
+  readonly onSelection: string;
+  /** Heatmap steps from least to most study time. */
+  readonly heat: readonly [string, string, string, string];
+}
+
+export type AccentName = 'blue' | 'orange' | 'green' | 'teal' | 'purple' | 'pink';
+
+/**
+ * Same values as Android (core/model Appearance.kt). Blue is the original palette; every other
+ * accent is Blue with only the hue changed, so contrast is the same in light and dark.
+ */
+export const ACCENTS: Readonly<Record<AccentName, { readonly label: string; readonly swatch: string; readonly light: AccentTones; readonly dark: AccentTones }>> = {
+  blue: {
+    label: 'Blue',
+    swatch: '#3987E5',
+    light: { primary: '#2F5E9E', onPrimary: '#FFFFFF', primaryContainer: '#D5E3FF', onPrimaryContainer: '#0B1D36', selection: '#DCE6F5', onSelection: '#0B1D36', heat: ['#9EC5F4', '#6DA7EC', '#3987E5', '#1C5CAB'] },
+    dark: { primary: '#9DC3FF', onPrimary: '#0B1D36', primaryContainer: '#1E3554', onPrimaryContainer: '#D5E3FF', selection: '#243447', onSelection: '#D5E3FF', heat: ['#184F95', '#256ABF', '#3987E5', '#86B6EF'] },
+  },
+  orange: {
+    label: 'Orange',
+    swatch: '#D36800',
+    light: { primary: '#964800', onPrimary: '#FFFFFF', primaryContainer: '#FFDBC7', onPrimaryContainer: '#331400', selection: '#FFDFCD', onSelection: '#331400', heat: ['#FFB07C', '#F0893D', '#D36800', '#944700'] },
+    dark: { primary: '#FFAF7B', onPrimary: '#331400', primaryContainer: '#542907', onPrimaryContainer: '#FFDBC7', selection: '#4B2B15', onSelection: '#FFDBC7', heat: ['#813D00', '#A95200', '#D36800', '#FA9C5B'] },
+  },
+  green: {
+    label: 'Green',
+    swatch: '#419841',
+    light: { primary: '#306A2E', onPrimary: '#FFFFFF', primaryContainer: '#D1E9C9', onPrimaryContainer: '#0B220A', selection: '#DCE9D5', onSelection: '#0B220A', heat: ['#A0CE97', '#72B36B', '#419841', '#216A24'] },
+    dark: { primary: '#99CF90', onPrimary: '#0B220A', primaryContainer: '#1E3B1C', onPrimaryContainer: '#D1E9C9', selection: '#253722', onSelection: '#D1E9C9', heat: ['#1B5C1E', '#2B792D', '#419841', '#89C081'] },
+  },
+  teal: {
+    label: 'Teal',
+    swatch: '#009694',
+    light: { primary: '#006968', onPrimary: '#FFFFFF', primaryContainer: '#C4EAE8', onPrimaryContainer: '#002121', selection: '#D5E9E8', onSelection: '#002121', heat: ['#81CFCD', '#23B6B3', '#009694', '#006866'] },
+    dark: { primary: '#71D1CE', onPrimary: '#002121', primaryContainer: '#003B3A', onPrimaryContainer: '#C4EAE8', selection: '#163837', onSelection: '#C4EAE8', heat: ['#005A58', '#007775', '#009694', '#5DC2C0'] },
+  },
+  purple: {
+    label: 'Purple',
+    swatch: '#9373E2',
+    light: { primary: '#67519B', onPrimary: '#FFFFFF', primaryContainer: '#E9DDFE', onPrimaryContainer: '#201835', selection: '#EBE2F6', onSelection: '#201835', heat: ['#CBB8F5', '#AF96EC', '#9373E2', '#674CA7'] },
+    dark: { primary: '#CCB6FE', onPrimary: '#201835', primaryContainer: '#392E53', onPrimaryContainer: '#E9DDFE', selection: '#362F47', onSelection: '#E9DDFE', heat: ['#594192', '#7658BB', '#9373E2', '#BDA7F0'] },
+  },
+  pink: {
+    label: 'Pink',
+    swatch: '#D15F94',
+    light: { primary: '#914367', onPrimary: '#FFFFFF', primaryContainer: '#FFD9E5', onPrimaryContainer: '#311320', selection: '#FCDDE7', onSelection: '#311320', heat: ['#F7ACC9', '#E686AF', '#D15F94', '#973C67'] },
+    dark: { primary: '#FEA8CA', onPrimary: '#311320', primaryContainer: '#502739', onPrimaryContainer: '#FFD9E5', selection: '#472A36', onSelection: '#FFD9E5', heat: ['#833359', '#AB4776', '#D15F94', '#EF99BC'] },
+  },
+};
+
+export const ACCENT_NAMES = Object.keys(ACCENTS) as AccentName[];
+
+export function isDarkTheme(mode: ThemeMode, systemDark: boolean): boolean {
+  return mode === 'dark' || (mode === 'system' && systemDark);
+}
+
+/**
+ * An app the user allows during focus. iPhone web apps can't see or open other apps by name, so
+ * each one is a link: an app's URL scheme (spotify://), a website, or the name of a Shortcut that
+ * opens the app.
+ */
+export interface AllowedAppLink {
+  readonly name: string;
+  readonly link: string;
+}
+
+export const MAX_ALLOWED_APPS = 12;
+
+/** Apps whose links are well known, offered as one-tap picks. */
+export const ALLOWED_APP_PRESETS: readonly AllowedAppLink[] = [
+  { name: 'Music', link: 'music://' },
+  { name: 'Notes', link: 'mobilenotes://' },
+  { name: 'Calendar', link: 'calshow://' },
+  { name: 'Books', link: 'ibooks://' },
+  { name: 'Files', link: 'shareddocuments://' },
+  { name: 'Spotify', link: 'spotify://' },
+  { name: 'Notion', link: 'notion://' },
+];
+
+/** A link with a scheme (spotify://, https://…) opens directly; anything else is a Shortcut name. */
+export function isUrlLink(link: string): boolean {
+  return /^[a-z][a-z0-9+.-]*:/i.test(link.trim());
+}
+
+function sanitizeAllowedApps(v: unknown): AllowedAppLink[] {
+  if (!Array.isArray(v)) return [];
+  const result: AllowedAppLink[] = [];
+  for (const item of v) {
+    if (!item || typeof item !== 'object') continue;
+    const { name, link } = item as { name?: unknown; link?: unknown };
+    if (typeof name !== 'string' || typeof link !== 'string') continue;
+    const n = name.trim().slice(0, 40);
+    const l = link.trim().slice(0, 300);
+    // javascript: and data: links would run code or load content inside Lock In.
+    if (!n || !l || /^(javascript|data|vbscript):/i.test(l)) continue;
+    result.push({ name: n, link: l });
+    if (result.length >= MAX_ALLOWED_APPS) break;
+  }
+  return result;
+}
+
+// endregion
+
 export interface StudyPreferences {
   readonly pomodoroFocusMin: number;
   readonly shortBreakMin: number;
@@ -178,6 +294,12 @@ export interface StudyPreferences {
   /** iPhone Shortcuts to run when a session starts and stops (empty = off). */
   readonly shortcutOnStart: string;
   readonly shortcutOnStop: string;
+  /** Light, dark or follow the device. */
+  readonly themeMode: ThemeMode;
+  /** Accent colour for the whole app. */
+  readonly accent: AccentName;
+  /** Shortcuts to the apps the user allows, shown on the timer during focus. */
+  readonly allowedApps: readonly AllowedAppLink[];
 }
 
 export const DEFAULT_PREFERENCES: StudyPreferences = {
@@ -193,6 +315,9 @@ export const DEFAULT_PREFERENCES: StudyPreferences = {
   chime: true,
   shortcutOnStart: '',
   shortcutOnStop: '',
+  themeMode: 'system',
+  accent: 'blue',
+  allowedApps: [],
 };
 
 const clamp = (v: unknown, lo: number, hi: number, fallback: number) => {
@@ -219,6 +344,9 @@ export function sanitizePreferences(p: Partial<StudyPreferences> | null | undefi
     chime: bool(v.chime, d.chime),
     shortcutOnStart: str(v.shortcutOnStart),
     shortcutOnStop: str(v.shortcutOnStop),
+    themeMode: THEME_MODES.includes(v.themeMode as ThemeMode) ? (v.themeMode as ThemeMode) : d.themeMode,
+    accent: v.accent && Object.hasOwn(ACCENTS, v.accent) ? (v.accent as AccentName) : d.accent,
+    allowedApps: sanitizeAllowedApps(v.allowedApps),
   };
 }
 

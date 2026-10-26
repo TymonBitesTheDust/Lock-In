@@ -1,7 +1,7 @@
 import { signal } from '@preact/signals';
 import type { ComponentChildren } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { SUBJECT_PALETTE } from '../core/model';
+import { ALLOWED_APP_PRESETS, SUBJECT_PALETTE, type AllowedAppLink } from '../core/model';
 import { Icon, type IconName } from './icons';
 
 // region Toasts
@@ -236,6 +236,88 @@ export function SubjectSheet({
           </button>
           <button type="submit" class="btn primary">
             Save
+          </button>
+        </div>
+      </form>
+    </Sheet>
+  );
+}
+
+/** Stand-in icon for an allowed app (a web app can't read other apps' icons): its first letter. */
+export function AppInitial({ name, small }: { name: string; small?: boolean }) {
+  const letter = Array.from(name.trim())[0]?.toUpperCase() ?? '?';
+  return (
+    <span class={`app-icon${small ? ' small' : ''}`} aria-hidden="true">
+      {letter}
+    </span>
+  );
+}
+
+/** Adds an app the user allows during focus: a one-tap pick, or a name plus a link or Shortcut. */
+export function AllowedAppSheet({ existing, onAdd, onClose }: { existing: readonly AllowedAppLink[]; onAdd: (app: AllowedAppLink) => void; onClose: () => void }) {
+  const name = useRef('');
+  const link = useRef('');
+  const presets = ALLOWED_APP_PRESETS.filter((p) => !existing.some((e) => e.link === p.link));
+  return (
+    <Sheet title="Add an app" onClose={onClose}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const n = name.current.trim();
+          const l = link.current.trim();
+          if (!n || !l) return;
+          onAdd({ name: n, link: l });
+          onClose();
+        }}
+      >
+        <label class="stack" for="app-name">
+          Name
+        </label>
+        <input id="app-name" class="field" maxLength={40} placeholder="Checkmate" enterKeyHint="next" onInput={(e) => (name.current = (e.currentTarget as HTMLInputElement).value)} />
+        <label class="stack" for="app-link">
+          Link or Shortcut name
+        </label>
+        <input
+          id="app-link"
+          class="field"
+          maxLength={300}
+          placeholder="spotify://  or  Open Checkmate"
+          autoCapitalize="off"
+          autoCorrect="off"
+          spellcheck={false}
+          enterKeyHint="done"
+          onInput={(e) => (link.current = (e.currentTarget as HTMLInputElement).value)}
+        />
+        <p class="hint">
+          An app's link, a website, or the name of a Shortcut that opens the app. For any app: in Shortcuts, make one with <b>Open App</b> and type its name here.
+        </p>
+        {presets.length > 0 && (
+          <>
+            <label class="stack">Or pick one</label>
+            <div class="chips">
+              {presets.map((p) => (
+                <button
+                  type="button"
+                  class="chip"
+                  key={p.link}
+                  onClick={() => {
+                    onAdd(p);
+                    onClose();
+                  }}
+                >
+                  {p.name}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+        <div class="actions">
+          <span style="flex:1" />
+          <button type="button" class="btn text" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" class="btn primary">
+            Add
           </button>
         </div>
       </form>

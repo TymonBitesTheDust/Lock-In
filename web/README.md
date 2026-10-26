@@ -17,7 +17,9 @@ It's published by GitHub Actions to **https://tymonbitesthedust.github.io/Lock-I
 | Study groups, live clocks, rankings, chat, nudges | ✓ | ✓ Same Firebase project and rules: iPhone and Android friends share groups |
 | Ongoing notification with a live clock | ✓ | — Open Lock In to see the clock; it can keep the screen on |
 | Alert when a round or break ends | ✓ Always | While Lock In is open (chime + message). Closed, the next open catches up exactly |
-| Block other apps during focus | ✓ | — iOS doesn't allow it for any app outside Screen Time. Lock In walks people through a Study Focus and Screen Time limits, and can run a Shortcut to switch the Focus on and off |
+| Block other apps during focus | ✓ A lock screen covers everything else, the home screen included | — iOS doesn't allow it for any app outside Screen Time. Lock In walks people through a Study Focus and Screen Time limits, and can run a Shortcut to switch the Focus on and off |
+| Allowed apps as shortcuts during focus | ✓ On the lock screen, with real app icons | ✓ Under the clock, as links (`spotify://`, a website, or a Shortcut name). The Study Focus can show a Home Screen page with only those apps |
+| Colour theme (Light / Dark / System, six accents) | ✓ | ✓ Same colours (`ACCENTS` in `src/core/model.ts` mirrors `core/model` `Appearance.kt`) |
 | Nudges when the app is closed | Within ~15 min | When Lock In is next opened |
 | Data | On the phone | On the phone (browser storage), with export/restore to a file |
 

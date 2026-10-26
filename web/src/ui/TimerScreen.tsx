@@ -1,9 +1,9 @@
 import { useState } from 'preact/hooks';
 import { Durations, GENERAL, GENERAL_COLOR, ddayDaysFrom, ddayLabel, nextSubjectColor } from '../core/model';
 import { Commands, formatClock, formatReadout, millisUntilDisplayChanges, readoutAt, type TimerReadout } from '../core/timer';
-import { isIOS, requestPersistentStorage, runShortcut, store, unlockAudio, wakeLockSupported } from '../data/runtime';
+import { isIOS, openAllowedApp, requestPersistentStorage, runShortcut, store, unlockAudio, wakeLockSupported } from '../data/runtime';
 import { liveTotalsForDay } from '../data/store';
-import { Section, SubjectSheet, Toggle } from './common';
+import { AppInitial, Section, SubjectSheet, Toggle } from './common';
 import { useNow } from './hooks';
 import { Icon } from './icons';
 
@@ -186,6 +186,19 @@ function SessionView({ readout, now }: { readout: TimerReadout; now: number }) {
             <span class="small muted">Keep screen on</span>
             <Toggle checked={prefs.keepScreenOn} label="Keep screen on" onChange={(v) => store.updatePrefs(() => ({ keepScreenOn: v }))} />
           </label>
+        )}
+        {readout.isRunning && !isBreak && prefs.allowedApps.length > 0 && (
+          <div class="allowed-apps">
+            <div class="small muted">Only these apps while you focus</div>
+            <div class="app-grid">
+              {prefs.allowedApps.map((app, i) => (
+                <button type="button" class="app-tile" key={i} aria-label={`Open ${app.name}`} onClick={() => openAllowedApp(app.link)}>
+                  <AppInitial name={app.name} />
+                  <span class="app-name ellipsis">{app.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         )}
         {pomodoro && <p class="hint">Break alerts play while Lock In is open. Time is counted either way.</p>}
       </div>

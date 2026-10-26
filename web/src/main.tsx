@@ -1,9 +1,11 @@
 import { render } from 'preact';
 import { startRuntime } from './data/runtime';
 import { App } from './ui/App';
+import { startTheme } from './ui/theme';
 import './styles.css';
 
 startRuntime();
+startTheme();
 render(<App />, document.getElementById('app')!);
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {

@@ -1,11 +1,12 @@
 import { useRef, useState } from 'preact/hooks';
-import { nextSubjectColor, type Subject } from '../core/model';
+import { ACCENTS, ACCENT_NAMES, MAX_ALLOWED_APPS, THEME_MODES, isUrlLink, nextSubjectColor, type Subject, type ThemeMode } from '../core/model';
 import { isIOS, isStandalone, store, wakeLockSupported } from '../data/runtime';
-import { ConfirmSheet, Section, StepperRow, SubjectSheet, ToggleRow, TopBar, showToast } from './common';
+import { AllowedAppSheet, AppInitial, ConfirmSheet, Section, StepperRow, SubjectSheet, ToggleRow, TopBar, showToast } from './common';
 import { Icon } from './icons';
 
 const APK_URL = 'https://github.com/TymonBitesTheDust/Lock-In/releases/latest/download/Lock-In.apk';
 const REPO_URL = 'https://github.com/TymonBitesTheDust/Lock-In';
+const THEME_LABELS: Record<ThemeMode, string> = { system: 'System', light: 'Light', dark: 'Dark' };
 
 export function SettingsScreen({ onOpen }: { onOpen: (screen: 'subjects' | 'focus' | 'install') => void }) {
   const p = store.prefs.value;
@@ -48,6 +49,37 @@ export function SettingsScreen({ onOpen }: { onOpen: (screen: 'subjects' | 'focu
           <Icon name="chevron" class="muted" />
         </button>
       </div>
+
+      <Section title="Appearance" />
+      <div class="list">
+        <div class="row appearance">
+          <span class="title">Theme</span>
+          <div class="segmented" role="group" aria-label="Theme">
+            {THEME_MODES.map((mode) => (
+              <button type="button" key={mode} aria-pressed={p.themeMode === mode} onClick={() => update(() => ({ themeMode: mode }))}>
+                {THEME_LABELS[mode]}
+              </button>
+            ))}
+          </div>
+          <span class="title">Colour · {ACCENTS[p.accent].label}</span>
+          <div class="swatches accents" role="group" aria-label="Accent colour">
+            {ACCENT_NAMES.map((name) => (
+              <button
+                type="button"
+                class="swatch"
+                key={name}
+                style={{ background: ACCENTS[name].swatch }}
+                aria-pressed={p.accent === name}
+                aria-label={ACCENTS[name].label}
+                onClick={() => update(() => ({ accent: name }))}
+              >
+                {p.accent === name && <Icon name="check" />}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <p class="hint">Used across Lock In, including the apps you allow during focus.</p>
 
       <Section title="Pomodoro" />
       <div class="list">
@@ -251,6 +283,8 @@ export function SubjectsScreen({ onBack }: { onBack: () => void }) {
 export function FocusScreen({ onBack }: { onBack: () => void }) {
   const p = store.prefs.value;
   const ios = isIOS();
+  const [addingApp, setAddingApp] = useState(false);
+  const apps = p.allowedApps;
   return (
     <div class="screen pushed">
       <TopBar title="Focus protection" onBack={onBack} />
@@ -272,6 +306,37 @@ export function FocusScreen({ onBack }: { onBack: () => void }) {
         <ToggleRow title="Chime when a round or break ends" checked={p.chime} onChange={(v) => store.updatePrefs(() => ({ chime: v }))} />
       </div>
 
+      <Section title="Apps you can use while studying" />
+      {apps.length > 0 && (
+        <div class="list">
+          {apps.map((app, i) => (
+            <div class="row" key={`${i}-${app.link}`}>
+              <AppInitial name={app.name} small />
+              <span class="grow" style="min-width:0">
+                <span class="title" style="display:block">
+                  {app.name}
+                </span>
+                <span class="sub ellipsis" style="display:block">
+                  {isUrlLink(app.link) ? app.link : `Shortcut: ${app.link}`}
+                </span>
+              </span>
+              <button
+                type="button"
+                class="icon-btn"
+                aria-label={`Remove ${app.name}`}
+                onClick={() => store.updatePrefs((prev) => ({ allowedApps: prev.allowedApps.filter((_, j) => j !== i) }))}
+              >
+                <Icon name="close" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      <button type="button" class="btn block" style="margin-top:12px" disabled={apps.length >= MAX_ALLOWED_APPS} onClick={() => setAddingApp(true)}>
+        Add an app
+      </button>
+      <p class="hint">They show under the clock during every focus round, so you can open them straight from Lock In.{ios ? ' Use the same apps for your Study Focus below.' : ''}</p>
+
       {ios && (
         <>
           <div class="prose">
@@ -284,7 +349,7 @@ export function FocusScreen({ onBack }: { onBack: () => void }) {
                 Under <b>Allow notifications</b>, keep only the people and apps you need.
               </li>
               <li>
-                Under <b>Customise screens</b>, pick a Home Screen page without games or social apps.
+                Make a Home Screen page with only the apps you allow while studying, then choose it under <b>Customise Screens</b>. With the Focus on, leaving Lock In shows just those apps.
               </li>
             </ol>
 
@@ -315,7 +380,19 @@ export function FocusScreen({ onBack }: { onBack: () => void }) {
           <p class="hint">Leave a name empty to skip that step. Shortcuts run only on iPhone and iPad.</p>
         </>
       )}
+      <AllowedAppsSheetHost open={addingApp} onClose={() => setAddingApp(false)} />
     </div>
+  );
+}
+
+function AllowedAppsSheetHost({ open, onClose }: { open: boolean; onClose: () => void }) {
+  if (!open) return null;
+  return (
+    <AllowedAppSheet
+      existing={store.prefs.value.allowedApps}
+      onAdd={(app) => store.updatePrefs((prev) => ({ allowedApps: [...prev.allowedApps, app] }))}
+      onClose={onClose}
+    />
   );
 }
 

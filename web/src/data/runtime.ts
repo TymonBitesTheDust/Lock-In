@@ -10,6 +10,7 @@
  */
 import { effect } from '@preact/signals';
 import { nextBoundaryElapsedMs, readoutAt, webTimeSource, Commands } from '../core/timer';
+import { isUrlLink } from '../core/model';
 import { createStore, MemoryStorage, type LockInStore } from './store';
 
 function pickStorage(): Storage {
@@ -80,6 +81,22 @@ export function runShortcut(name: string) {
   const trimmed = name.trim();
   if (!trimmed) return;
   window.location.href = `shortcuts://run-shortcut?name=${encodeURIComponent(trimmed)}`;
+}
+
+/**
+ * Opens an app the user allows during focus: an app link (spotify://) or website opens directly,
+ * anything else is run as a Shortcut name (for apps without a link: Shortcuts → Open App).
+ */
+export function openAllowedApp(link: string) {
+  const l = link.trim();
+  if (!l) return;
+  if (!isUrlLink(l)) {
+    runShortcut(l);
+  } else if (/^https?:/i.test(l)) {
+    window.open(l, '_blank', 'noopener');
+  } else {
+    window.location.href = l;
+  }
 }
 
 // endregion

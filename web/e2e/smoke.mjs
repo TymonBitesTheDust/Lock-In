@@ -136,6 +136,66 @@ async function run(colorScheme) {
   await context.close();
 }
 
+// Colour theme and allowed apps: Orange + forced Dark on a light-mode phone, kept after a reload;
+// apps added in Focus protection show under the clock during focus.
+async function appearance() {
+  console.log(`\n${browserType.name()} · theme and allowed apps`);
+  const context = await browser.newContext({ ...device, colorScheme: 'light', serviceWorkers: 'block' });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(String(e)));
+  await page.goto(url);
+  const vars = () =>
+    page.evaluate(() => {
+      const css = getComputedStyle(document.documentElement);
+      return { theme: document.documentElement.dataset.theme, primary: css.getPropertyValue('--primary').trim().toUpperCase(), bg: getComputedStyle(document.body).backgroundColor };
+    });
+
+  check((await vars()).theme === 'light', 'follows the light device by default');
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('button', { name: 'Orange' }).click();
+  check((await vars()).primary === '#964800', `Orange accent in light (${(await vars()).primary})`);
+  await page.getByRole('button', { name: 'Dark', exact: true }).click();
+  let v = await vars();
+  check(v.theme === 'dark' && v.primary === '#FFAF7B' && v.bg === 'rgb(15, 18, 22)', `forced Dark with the Orange accent (${JSON.stringify(v)})`);
+  await snap(page, 'theme-1-settings-orange-dark');
+
+  await page.reload();
+  v = await vars();
+  check(v.theme === 'dark' && v.primary === '#FFAF7B', 'theme and accent survive a reload');
+
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('button', { name: /Focus protection/ }).click();
+  await page.getByRole('button', { name: 'Add an app' }).click();
+  await page.getByRole('button', { name: 'Spotify', exact: true }).click();
+  await page.getByRole('button', { name: 'Add an app' }).click();
+  await page.getByLabel('Name', { exact: true }).fill('Checkmate');
+  await page.getByLabel('Link or Shortcut name').fill('Open Checkmate');
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  const focus = await text(page);
+  check(focus.includes('Spotify') && focus.includes('Shortcut: Open Checkmate'), 'adds a preset app and a Shortcut app');
+  await snap(page, 'theme-2-allowed-apps');
+  await page.getByRole('button', { name: 'Back' }).click();
+
+  await page.getByRole('button', { name: 'Timer' }).click();
+  await page.getByRole('button', { name: 'Start General' }).click();
+  await page.getByRole('button', { name: 'Open Spotify' }).waitFor({ timeout: 5_000 }).catch(() => {});
+  check(
+    (await page.getByRole('button', { name: 'Open Spotify' }).count()) === 1 && (await page.getByRole('button', { name: 'Open Checkmate' }).count()) === 1,
+    'the allowed apps show under the clock during focus',
+  );
+  await snap(page, 'theme-3-session-allowed-apps');
+  await page.getByRole('button', { name: 'Pause' }).click();
+  check((await page.getByRole('button', { name: 'Open Spotify' }).count()) === 0, 'and hide while paused');
+  await page.getByRole('button', { name: 'Stop' }).click();
+
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('button', { name: 'System' }).click();
+  check((await vars()).theme === 'light', 'System follows the device again');
+  check(errors.length === 0, `no page errors${errors.length ? `: ${errors.join(' | ')}` : ''}`);
+  await context.close();
+}
+
 async function offline() {
   // Service workers are reliable in Playwright's Chromium; this check always uses it.
   const sw = browserType === chromium ? browser : await chromium.launch().catch(() => null);
@@ -163,6 +223,7 @@ async function offline() {
 try {
   await run('light');
   await run('dark');
+  await appearance();
   await offline();
 } finally {
   await browser.close();

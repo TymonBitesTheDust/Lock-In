@@ -34,8 +34,43 @@
   --font-display: -apple-system-headline, -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
+/*
+ * Light or dark: theme.ts sets data-theme from Settings (System follows the device). Before it
+ * runs, the device's setting decides. The accent colours are set by theme.ts as inline variables.
+ */
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --primary: #9dc3ff;
+  --on-primary: #0b1d36;
+  --primary-container: #1e3554;
+  --on-primary-container: #d5e3ff;
+  --secondary-container: #243447;
+  --on-secondary-container: #d5e3ff;
+  --bg: #0f1216;
+  --on-bg: #e2e4e9;
+  --surface-low: #13171c;
+  --surface: #171b21;
+  --surface-high: #1e232a;
+  --surface-highest: #262c34;
+  --surface-lowest: #0b0e11;
+  --muted: #b3bac5;
+  --outline: #59616d;
+  --outline-variant: #3a414b;
+  --error: #f2b8b5;
+  --heat-0: #1e232a;
+  --heat-1: #22395a;
+  --heat-2: #2f5687;
+  --heat-3: #5a8ad6;
+  --heat-4: #9dc3ff;
+  --shadow: none;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --primary: #9dc3ff;
     --on-primary: #0b1d36;
     --primary-container: #1e3554;
@@ -613,6 +648,29 @@ button.row:active {
   color: #fff;
 }
 
+/* Settings → Appearance: a stacked row with the theme switch and the accent swatches. */
+.row.appearance {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.row.appearance .segmented {
+  margin-bottom: 6px;
+}
+
+.swatches.accents {
+  justify-content: space-between;
+  margin-top: 0;
+}
+
+.swatches.accents .swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
+
 .swatch[aria-pressed='true'] {
   box-shadow:
     0 0 0 3px var(--surface-low),
@@ -756,6 +814,76 @@ button.row:active {
 
 .session .awake {
   margin-top: 28px;
+}
+
+/* Allowed apps under the clock during focus, like Yeolpumta's lock screen. */
+.allowed-apps {
+  margin-top: 32px;
+  width: 100%;
+  max-width: 360px;
+}
+
+/* Four to a row, centred under the clock like the rest of the session screen. */
+.app-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 8px;
+  margin-top: 12px;
+}
+
+.app-tile {
+  width: 25%;
+  border: 0;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 2px;
+  border-radius: 14px;
+  min-width: 0;
+}
+
+.app-tile:active {
+  background: var(--surface-high);
+}
+
+.app-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.app-icon.small {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+.app-name {
+  max-width: 100%;
+  font-size: 12px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.chips .chip {
+  background: none;
+  cursor: pointer;
 }
 
 /* endregion */
