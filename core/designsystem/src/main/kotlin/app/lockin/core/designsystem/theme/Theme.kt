@@ -1,19 +1,28 @@
 package app.lockin.core.designsystem.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import app.lockin.core.model.AccentColor
+import app.lockin.core.model.AccentTones
 
 /**
  * Dark-first: sessions run for hours, often at night. Low-luminance surfaces, one calm accent,
  * no pure black (OLED smear on scroll) and no pure white text (glare).
+ *
+ * These are the neutral surfaces plus the Blue accent. [LockInTheme] swaps in the accent the user
+ * picked (AccentColor in core:model); surfaces, text and error colours never change.
  */
 private val DarkColors = darkColorScheme(
     primary = Color(0xFF9DC3FF),
@@ -84,14 +93,39 @@ object LockInTextStyles {
     val clock: TextStyle @Composable get() = MaterialTheme.typography.displayLarge
 }
 
+/** Heatmap cells, from no study time to the most. */
+@Immutable
+class HeatmapColors(val levels: List<Color>)
+
+/** The heatmap ramp for the current accent and light/dark. Provided by [LockInTheme]. */
+val LocalHeatmapColors = staticCompositionLocalOf { HeatmapColors(emptyList()) }
+
 @Composable
 fun LockInTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    accent: AccentColor = AccentColor.BLUE,
     content: @Composable () -> Unit,
 ) {
-    MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
-        typography = LockInTypography,
-        content = content,
-    )
+    val base = if (darkTheme) DarkColors else LightColors
+    val tones = accent.tonesFor(darkTheme)
+    val scheme = base.withAccent(tones, inversePrimary = Color(accent.tonesFor(!darkTheme).primary))
+    val heatmap = HeatmapColors(listOf(scheme.surfaceVariant) + tones.heat.map { Color(it) })
+    CompositionLocalProvider(LocalHeatmapColors provides heatmap) {
+        MaterialTheme(
+            colorScheme = scheme,
+            typography = LockInTypography,
+            content = content,
+        )
+    }
 }
+
+private fun ColorScheme.withAccent(t: AccentTones, inversePrimary: Color) = copy(
+    primary = Color(t.primary),
+    onPrimary = Color(t.onPrimary),
+    primaryContainer = Color(t.primaryContainer),
+    onPrimaryContainer = Color(t.onPrimaryContainer),
+    secondaryContainer = Color(t.selection),
+    onSecondaryContainer = Color(t.onSelection),
+    surfaceTint = Color(t.primary),
+    inversePrimary = inversePrimary,
+)

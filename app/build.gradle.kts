@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId = "app.lockin"
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "0.3.0"
     }
 
     // One shared debug key (keystore/debug.keystore), so every CI and local build signs the same

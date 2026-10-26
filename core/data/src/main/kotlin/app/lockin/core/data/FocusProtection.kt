@@ -58,15 +58,15 @@ class InstalledApps @Inject constructor(
     }
 
     /**
-     * Packages that are never blocked, whatever the user picks: Lock In, home screens, the phone
-     * dialer (emergency calls), Settings (so permissions can be granted), the system UI and the
-     * permission controller.
+     * Packages that are never blocked, whatever the user picks: Lock In, the phone dialer
+     * (emergency calls), Settings (so permissions can be granted), the system UI and the permission
+     * controller. The home screen is not on this list: during focus it is covered by the lock
+     * screen, which shows the allowed apps as shortcuts instead (like Yeolpumta).
      */
     fun alwaysAllowed(): Set<String> {
         val result = HashSet<String>()
         result += context.packageName
         result += FIXED_SYSTEM_PACKAGES
-        result += resolvers(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME))
         result += resolvers(Intent(Intent.ACTION_DIAL))
         result += resolvers(Intent(Settings.ACTION_SETTINGS))
         return result

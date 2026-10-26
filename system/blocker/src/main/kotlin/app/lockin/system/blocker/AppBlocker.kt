@@ -56,15 +56,17 @@ class AppBlocker @Inject constructor(
             controller.awaitReady()
             combine(
                 controller.state,
-                preferences.preferences.map { it.blockingEnabled }.distinctUntilChanged(),
+                preferences.preferences
+                    .map { BlockSettings(it.blockingEnabled, LockScreenStyle(it.accent, it.themeMode)) }
+                    .distinctUntilChanged(),
                 allowedApps.allowedPackages,
-            ) { state, enabled, allowed -> Triple(state, enabled, allowed) }
-                .collectLatest { (state, enabled, allowed) ->
-                    if (!enabled || state !is TimerState.Active || state.run !is RunState.Running) {
+            ) { state, settings, allowed -> Triple(state, settings, allowed) }
+                .collectLatest { (state, settings, allowed) ->
+                    if (!settings.enabled || state !is TimerState.Active || state.run !is RunState.Running) {
                         hideOverlay()
                     } else {
                         try {
-                            enforce(state, allowed + installedApps.alwaysAllowed())
+                            enforce(state, allowed, settings.style)
                         } finally {
                             withContext(kotlinx.coroutines.NonCancellable) { hideOverlay() }
                         }
@@ -73,7 +75,13 @@ class AppBlocker @Inject constructor(
         }
     }
 
-    private suspend fun enforce(state: TimerState.Active, allowed: Set<String>) {
+    /**
+     * [userAllowed] are the apps the user ticked; they are also the shortcuts on the lock screen.
+     * Lock In, the dialer, Settings and the system UI are never blocked. The home screen is: leaving
+     * Lock In during focus lands on the lock screen, which is how you reach the allowed apps.
+     */
+    private suspend fun enforce(state: TimerState.Active, userAllowed: Set<String>, style: LockScreenStyle) {
+        val allowed = userAllowed + installedApps.alwaysAllowed()
         val power = context.getSystemService(PowerManager::class.java)
         detector.reset()
         var checks = 0
@@ -88,8 +96,10 @@ class AppBlocker @Inject constructor(
                 else -> {
                     val front = runCatching { detector.current() }.onFailure { Log.w(TAG, "usage events", it) }.getOrNull()
                     if (front != null && front !in allowed) {
-                        val label = installedApps.label(front)
-                        withContext(Dispatchers.Main) { overlay.show(label, state.subject.name) }
+                        // Just after a tap on the lock screen, the app it opened may not be in front yet.
+                        if (!overlay.isHandingOff) {
+                            withContext(Dispatchers.Main) { overlay.show(state.subject.name, userAllowed, style) }
+                        }
                     } else {
                         hideOverlay()
                     }
@@ -102,6 +112,8 @@ class AppBlocker @Inject constructor(
     private suspend fun hideOverlay() {
         if (overlay.isShowing) withContext(Dispatchers.Main) { overlay.hide() }
     }
+
+    private data class BlockSettings(val enabled: Boolean, val style: LockScreenStyle)
 
     private companion object {
         const val TAG = "LockInBlocker"

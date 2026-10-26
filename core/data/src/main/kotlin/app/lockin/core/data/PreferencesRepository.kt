@@ -6,8 +6,11 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.lockin.core.model.AccentColor
 import app.lockin.core.model.StudyPreferences
+import app.lockin.core.model.ThemeMode
 import app.lockin.core.timer.TimerMode
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -44,6 +47,8 @@ class PreferencesRepository @Inject constructor(
             prefs[DAY_START_HOUR] = next.dayStartHour.coerceIn(0, 23)
             prefs[BLOCKING] = next.blockingEnabled
             prefs[PREFER_POMODORO] = next.preferPomodoro
+            prefs[THEME_MODE] = next.themeMode.name
+            prefs[ACCENT] = next.accent.name
         }
     }
 
@@ -59,6 +64,9 @@ class PreferencesRepository @Inject constructor(
             dayStartHour = prefs[DAY_START_HOUR] ?: defaults.dayStartHour,
             blockingEnabled = prefs[BLOCKING] ?: defaults.blockingEnabled,
             preferPomodoro = prefs[PREFER_POMODORO] ?: defaults.preferPomodoro,
+            // Stored by name; an unknown name (from a newer or older version) falls back to the default.
+            themeMode = ThemeMode.entries.firstOrNull { it.name == prefs[THEME_MODE] } ?: defaults.themeMode,
+            accent = AccentColor.entries.firstOrNull { it.name == prefs[ACCENT] } ?: defaults.accent,
         )
     }
 
@@ -72,6 +80,8 @@ class PreferencesRepository @Inject constructor(
         val DAY_START_HOUR = intPreferencesKey("day_start_hour")
         val BLOCKING = booleanPreferencesKey("blocking_enabled")
         val PREFER_POMODORO = booleanPreferencesKey("prefer_pomodoro")
+        val THEME_MODE = stringPreferencesKey("theme_mode")
+        val ACCENT = stringPreferencesKey("accent")
     }
 }
 

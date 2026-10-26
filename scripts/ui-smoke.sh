@@ -49,6 +49,22 @@ open_app() {
   sleep 2
 }
 
+# Like tap, but a missing element is only logged (for apps that may not exist on every image).
+tap_optional() {
+  local before=$FAIL
+  tap "$@" || { FAIL=$before; echo "optional, skipped: $*" >> "$OUT/steps.txt"; return 1; }
+}
+
+# Ticks an app in Focus protection: search by a prefix (so the field's own text doesn't match the
+# exact label), then tap the row.
+allow_app() {
+  tap 'class="android.widget.EditText"' || return 0
+  for _ in 1 2 3 4 5 6 7 8 9 10; do adb shell input keyevent 67; done
+  adb shell input text "$1"
+  sleep 1.5
+  tap_optional "text=\"$2\""
+}
+
 add_subject() {
   tap 'text="Add"' && {
     tap 'class="android.widget.EditText"'
@@ -105,12 +121,17 @@ shot 10-stats-scrolled
 tap 'text="Groups"' && shot 11-groups
 tap 'text="Settings"' && shot 12-settings
 
-# App blocking end to end: grant both special permissions, turn blocking on, start focus,
-# open a non-allowed app (Clock) and expect the lock overlay.
+# App blocking end to end: grant both special permissions, turn blocking on, allow two apps,
+# start focus, and check the lock screen: over a non-allowed app (Clock), Back goes to Lock In, the
+# home screen is covered, and an allowed app opens from the lock screen's shortcuts.
 adb shell appops set $PKG GET_USAGE_STATS allow
 adb shell appops set $PKG SYSTEM_ALERT_WINDOW allow
 tap 'text="Focus protection"' && {
   tap 'checkable="true"'
+  allow_app Calen Calendar
+  allow_app Conta Contacts
+  tap 'class="android.widget.EditText"' && for _ in 1 2 3 4 5 6 7 8 9 10; do adb shell input keyevent 67; done
+  adb shell input keyevent 4 # hides the keyboard
   shot 13-focus-protection-on
   adb shell input keyevent 4
 }
@@ -120,21 +141,58 @@ sleep 2
 adb shell monkey -p com.google.android.deskclock -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
 sleep 4
 shot 14-blocked-app
-adb shell input keyevent 4
+tap 'content-desc="Back to Lock In"'
 sleep 2
-shot 15-after-back-from-block
+shot 15-back-to-lock-in
+adb shell input keyevent 3 # Home
+sleep 4
+shot 16-home-covered
+tap_optional 'content-desc="Calendar"' 'content-desc="Contacts"' && {
+  sleep 4
+  shot 17-allowed-app-opened
+}
 open_app
 tap 'text="Stop"'
-shot 16-timer-home
+shot 18-timer-home
 
-# Dark theme pass.
+# Dark theme pass (following the phone).
 adb shell cmd uimode night yes
 sleep 3
 open_app
-shot 17-dark-timer
-tap 'text="Stats"' && shot 18-dark-stats
-tap 'text="Planner"' && shot 19-dark-planner
+shot 19-dark-timer
+tap 'text="Stats"' && shot 20-dark-stats
+tap 'text="Planner"' && shot 21-dark-planner
 adb shell cmd uimode night no
+sleep 2
+
+# Colour theme: pick Orange and force Dark while the phone is in light mode, then check the app,
+# the heatmap and the lock screen follow.
+open_app
+tap 'text="Settings"' && {
+  tap 'content-desc="Orange"'
+  shot 22-settings-orange
+  tap 'text="Dark"'
+  shot 23-settings-orange-dark
+}
+tap 'text="Timer"' && shot 24-timer-orange-dark
+tap 'content-desc="Start Maths"'
+sleep 2
+adb shell monkey -p com.google.android.deskclock -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+sleep 4
+shot 25-blocked-orange-dark
+open_app
+tap 'text="Stop"'
+tap 'text="Stats"' && {
+  adb shell input swipe 500 1600 500 400 300
+  sleep 1
+  shot 26-stats-orange-dark
+}
+tap 'text="Settings"' && {
+  tap 'text="Light"'
+  shot 27-settings-orange-light
+  tap 'text="System"'
+  tap 'content-desc="Blue"'
+}
 
 adb logcat -d > "$OUT/logcat.txt"
 adb logcat -d -b crash > "$OUT/crash.txt"

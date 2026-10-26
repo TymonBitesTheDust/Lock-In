@@ -70,6 +70,10 @@ data class StudyPreferences(
     val blockingEnabled: Boolean = false,
     /** Which mode the subject play buttons start. */
     val preferPomodoro: Boolean = false,
+    /** Light, dark or follow the phone. */
+    val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    /** Accent colour for the whole app, the lock screen included. */
+    val accent: AccentColor = AccentColor.BLUE,
 )
 
 object SubjectPalette {

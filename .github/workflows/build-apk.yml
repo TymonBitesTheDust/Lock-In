@@ -2,7 +2,9 @@ name: Build APK
 
 on:
   push:
-    branches: [main]
+    # Every branch is built and walked on the emulator, so a change can be checked before it's
+    # merged. Only main and v* tags publish releases (see the release job).
+    branches: ['**', '!ci-output', '!ci-ui']
     # The web app (web/) has its own workflow, web.yml.
     paths-ignore: ['web/**', '.github/workflows/web.yml']
     # Pushing a tag like v0.2.0 also publishes a GitHub Release with the APK (see the release job).
@@ -137,13 +139,13 @@ jobs:
           git commit -q -m "UI $STATUS for $GITHUB_SHA"
           git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ci-ui
 
-  # Publishes the APK as a GitHub Release once the emulator run passed. A release is created
+  # Publishes the APK as a GitHub Release once the emulator run passed, from main or a v* tag only. A release is created
   # whenever main carries a versionName that has no release yet (bump the version to release),
   # or when a v* tag is pushed. Existing releases are never replaced by plain main pushes.
   # Permanent link: https://github.com/<owner>/<repo>/releases/latest/download/Lock-In.apk
   release:
     needs: [build, ui]
-    if: ${{ github.event_name == 'push' && needs.build.result == 'success' && needs.ui.result == 'success' }}
+    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) && needs.build.result == 'success' && needs.ui.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5

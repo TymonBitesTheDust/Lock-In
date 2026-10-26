@@ -1,6 +1,26 @@
 package app.lockin.feature.settings
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import app.lockin.core.model.AccentColor
+import app.lockin.core.model.ThemeMode
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -82,6 +102,17 @@ fun SettingsRoute(
         }
 
         Spacer(Modifier.height(16.dp))
+        SectionHeader("Appearance")
+        LockInCard {
+            AppearanceSection(
+                mode = p.themeMode,
+                accent = p.accent,
+                onMode = { mode -> viewModel.update { it.copy(themeMode = mode) } },
+                onAccent = { accent -> viewModel.update { it.copy(accent = accent) } },
+            )
+        }
+
+        Spacer(Modifier.height(16.dp))
         SectionHeader("Pomodoro")
         LockInCard {
             Stepper("Focus", "${p.pomodoroFocusMin} min", { viewModel.update { it.copy(pomodoroFocusMin = (it.pomodoroFocusMin - 5).coerceAtLeast(5)) } }) {
@@ -121,6 +152,66 @@ fun SettingsRoute(
         }
         Spacer(Modifier.height(24.dp))
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AppearanceSection(
+    mode: ThemeMode,
+    accent: AccentColor,
+    onMode: (ThemeMode) -> Unit,
+    onAccent: (AccentColor) -> Unit,
+) {
+    Text("Theme", style = MaterialTheme.typography.bodyLarge)
+    Spacer(Modifier.height(8.dp))
+    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+        ThemeMode.entries.forEachIndexed { i, option ->
+            SegmentedButton(
+                selected = mode == option,
+                onClick = { onMode(option) },
+                shape = SegmentedButtonDefaults.itemShape(i, ThemeMode.entries.size),
+            ) { Text(option.label) }
+        }
+    }
+    Spacer(Modifier.height(16.dp))
+    Text("Colour · ${accent.label}", style = MaterialTheme.typography.bodyLarge)
+    Spacer(Modifier.height(8.dp))
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .selectableGroup(),
+    ) {
+        AccentColor.entries.forEach { option ->
+            val selected = option == accent
+            // Each swatch gets an equal share of the row as its touch target, so six fit on narrow phones.
+            Box(
+                Modifier
+                    .weight(1f)
+                    .height(48.dp)
+                    .selectable(selected = selected, role = Role.RadioButton, onClick = { onAccent(option) })
+                    .semantics { contentDescription = option.label },
+                contentAlignment = Alignment.Center,
+            ) {
+                Box(
+                    Modifier
+                        .size(40.dp)
+                        .border(2.dp, if (selected) MaterialTheme.colorScheme.onSurface else Color.Transparent, CircleShape)
+                        .padding(4.dp)
+                        .clip(CircleShape)
+                        .background(Color(option.swatch)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (selected) Icon(Icons.Filled.Check, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
+                }
+            }
+        }
+    }
+    Spacer(Modifier.height(8.dp))
+    Text(
+        "Used across Lock In and on the lock screen you see during focus.",
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 }
 
 @Composable

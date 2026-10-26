@@ -29,6 +29,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import app.lockin.core.designsystem.theme.LocalHeatmapColors
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -262,9 +263,12 @@ private fun heatLevel(ms: Long): Int {
     }
 }
 
-/** Empty cell plus four steps of one blue ramp, ordered so "more" always reads as stronger. */
+/** Empty cell plus four steps of the accent's ramp, ordered so "more" always reads as stronger. */
 @Composable
 private fun heatmapLevels(): List<Color> {
+    val levels = LocalHeatmapColors.current.levels
+    if (levels.size == 5) return levels
+    // Outside LockInTheme (previews): the original blue ramp.
     val empty = MaterialTheme.colorScheme.surfaceVariant
     val dark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     return if (dark) {

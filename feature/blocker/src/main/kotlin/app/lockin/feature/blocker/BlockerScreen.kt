@@ -92,8 +92,8 @@ fun BlockerRoute(onBack: () -> Unit, viewModel: BlockerViewModel = hiltViewModel
                     }
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "While a focus phase runs, opening an app that isn't on your list shows a lock screen instead. " +
-                            "Breaks and paused sessions are never blocked.",
+                        "While a focus round runs, leaving Lock In shows a lock screen with the apps you tick below. " +
+                            "Tap one to open it. Breaks and paused sessions are never blocked.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -112,7 +112,7 @@ fun BlockerRoute(onBack: () -> Unit, viewModel: BlockerViewModel = hiltViewModel
                     Spacer(Modifier.height(8.dp))
                     PermissionCard(
                         title = "Display over other apps",
-                        body = "Lets Lock In cover a blocked app with the lock screen.",
+                        body = "Lets Lock In show the lock screen over other apps.",
                         granted = state.overlay,
                         onGrant = { open(viewModel.overlayIntent()) },
                     )
@@ -122,7 +122,7 @@ fun BlockerRoute(onBack: () -> Unit, viewModel: BlockerViewModel = hiltViewModel
                 Spacer(Modifier.height(16.dp))
                 SectionHeader("Apps you can use while studying (${state.allowedCount})")
                 Text(
-                    "Phone calls, Settings, your home screen and Lock In always stay available.",
+                    "Phone calls, Settings and Lock In always stay available. Your home screen is covered during focus.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
