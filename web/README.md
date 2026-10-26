@@ -58,6 +58,7 @@ npm run dev          # http://localhost:5173, open it on your phone via your com
 npm test             # unit tests (engine, stats, storage, presence)
 npm run build        # dist/
 npm run e2e          # end-to-end tests against dist/ (WebKit; BROWSER=chromium to use Chromium)
+node e2e/readme-shots.mjs   # after a build: redraws docs/images/iphone-focus.png for the README
 ```
 
 `npm run e2e` needs Playwright's browsers once: `npx playwright install webkit chromium`.

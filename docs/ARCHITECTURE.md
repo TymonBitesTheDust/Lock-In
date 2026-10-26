@@ -18,8 +18,8 @@ Checked against official release pages on 24 Oct 2026.
 | UI | Compose BOM **2026.09.00** (Material 3 1.4.0) | 100% Compose. |
 | Navigation | App-owned state: current tab + one pushed screen, `BackHandler` pops | Five tabs and two pushed screens don't need a library; the back stack is plain saveable state, which fits MVI. Navigation 3 when deep links or nested flows arrive. |
 | Local data | DataStore **1.3.0** (live session, preferences), Room **2.8.5** (subjects, focus segments, sessions, tasks, D-Days, allowed apps) | See principle 4. |
-| Background | Foreground service, AlarmManager, WorkManager **2.12.0** | Each has one job; see §5.7. WorkManager runs the 15-minute nudge check (§6.6). |
-| Groups backend | Firebase BoM **35.1.0**: Auth (email/password), Cloud Firestore | Free Spark plan. No google-services plugin: the app build reads `app/google-services.json` if present (§6.6). |
+| Background | Foreground service, AlarmManager, WorkManager **2.12.0** | Each has one job; see §5.7. WorkManager runs the 15-minute nudge check (§6.7). |
+| Groups backend | Firebase BoM **35.1.0**: Auth (email/password), Cloud Firestore | Free Spark plan. No google-services plugin: the app build reads `app/google-services.json` if present (§6.7). |
 
 ## 2. Five rules the rest of the design follows
 
@@ -83,7 +83,7 @@ graph TD
 |---|---|---|
 | `:app` | Android app | `Application`, `MainActivity`, navigation host, the full Hilt graph. |
 | `:core:timer` | Pure Kotlin | Timer engine, state model, snapshot codec, `TimerController` interface and its default implementation, platform ports. Zero Android imports. |
-| `:core:designsystem` | Android + Compose | Theme, typography (tabular clock digits), shared components, Canvas charts (heatmap, rings). |
+| `:core:designsystem` | Android + Compose | Theme (neutral surfaces plus the user's accent from `:core:model`), typography (tabular clock digits), shared components, Canvas charts (heatmap, rings). |
 | `:core:model` | Pure Kotlin | Domain models (Subject, StudyTask, DDay, StudySegment, preferences), the study-day clock and all stats maths (per day, per subject, per hour, streaks). JVM-tested. |
 | `:core:database` | Android | Room database, entities, DAOs. |
 | `:core:network` | Android | Firebase Auth and Firestore repositories (groups, presence, chat, nudges). Inert when Firebase isn't configured. |
@@ -282,13 +282,17 @@ Day (by hour, rotated to start at the study day's first hour), week and month (b
 
 ### 6.5 App blocking with an allowed-apps list
 
-The user picks the apps they may use while studying; everything else is blocked **only during running focus phases**. Breaks, paused sessions and idle never block (rule 2: `AppBlocker` is a projection of timer state). Always allowed: Lock In, home screens, the dialer, Settings, System UI and the permission controller.
+The user picks the apps they may use while studying; everything else is blocked **only during running focus phases**. Breaks, paused sessions and idle never block (rule 2: `AppBlocker` is a projection of timer state). Always allowed: Lock In, the dialer, Settings, System UI and the permission controller. The home screen is **not** allowed: as in Yeolpumta, leaving Lock In during focus lands on the lock screen, and that is where the allowed apps are opened from.
 
-Detection polls `UsageStatsManager.queryEvents` every 800 ms while the screen is on, reading only events since the last poll. A blocked app is covered by a full-screen `TYPE_APPLICATION_OVERLAY` window ("Back to Lock In" / "Go to home screen"; Back goes home). Requires two user-granted permissions: usage access and display over other apps; the settings screen explains both and links to the system pages.
+Detection polls `UsageStatsManager.queryEvents` every 800 ms while the screen is on, reading only events since the last poll. Anything not allowed, the launcher included, is covered by a full-screen `TYPE_APPLICATION_OVERLAY` window that doubles as a launcher: the allowed apps (plus the default dialer, so calls are always one tap away) as icons, and "Back to Lock In"; Back does the same. Opening an app from it starts a 3 s hand-off during which the blocker doesn't re-cover the front app, because the opened app needs a moment to reach the front and the overlay would otherwise sit on top of it. The overlay draws with the user's theme (`LockScreenStyle`: accent and light/dark), from the same `AccentColor` values as Compose. Requires two user-granted permissions: usage access and display over other apps; the settings screen explains both and links to the system pages.
 
 No AccessibilityService: Play restricts it to accessibility tools, and it would let the app read screen content it doesn't need. The cost is up to ~0.8 s before the overlay appears. The process stays alive during sessions because of the timer's foreground service, so no second service is needed.
 
-### 6.6 Study groups (Firebase)
+### 6.6 Appearance
+
+Settings → Appearance stores a `ThemeMode` (System, Light, Dark) and an `AccentColor` in DataStore. The palettes live in `:core:model` (`Appearance.kt`) as ARGB ints so Compose (`LockInTheme`) and the plain-View lock screen use the same values. Surfaces, text and error colours are neutral and never change; only the accent roles do (primary, its container, selection containers, heatmap ramp). Every accent is the original blue with only the HCT hue changed, keeping tone and chroma per role, so on-primary text stays ≥ 6.5:1 and the accent ≥ 5.6:1 against surfaces in both modes. `MainActivity` also re-applies `enableEdgeToEdge` when the resolved mode changes, because a forced Light or Dark can disagree with the system and the bar icons must follow the app. The web app mirrors the same values in `web/src/core/model.ts`.
+
+### 6.7 Study groups (Firebase)
 
 | Collection | Contents | Who can read / write |
 |---|---|---|
