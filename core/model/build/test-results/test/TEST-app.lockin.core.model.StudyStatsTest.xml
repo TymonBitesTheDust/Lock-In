@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="app.lockin.core.model.StudyStatsTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-26T01:27:54.781Z" hostname="runnervmtai0g" time="0.149">
+  <properties/>
+  <testcase name="a session after midnight belongs to the previous study day" classname="app.lockin.core.model.StudyStatsTest" time="0.071"/>
+  <testcase name="per subject groups by id and keeps the latest name" classname="app.lockin.core.model.StudyStatsTest" time="0.04"/>
+  <testcase name="streak survives an empty today and breaks on a gap" classname="app.lockin.core.model.StudyStatsTest" time="0.003"/>
+  <testcase name="duration formats" classname="app.lockin.core.model.StudyStatsTest" time="0.001"/>
+  <testcase name="days without study are present with zero" classname="app.lockin.core.model.StudyStatsTest" time="0.002"/>
+  <testcase name="per hour splits at the hour" classname="app.lockin.core.model.StudyStatsTest" time="0.003"/>
+  <testcase name="dday labels" classname="app.lockin.core.model.StudyStatsTest" time="0.005"/>
+  <testcase name="segments crossing the day boundary are split exactly" classname="app.lockin.core.model.StudyStatsTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="app.lockin.core.timer.DefaultTimerControllerTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-24T02:08:44.584Z" hostname="runnervm8k3b6" time="0.213">
+  <properties/>
+  <testcase name="start promotes the service and schedules the first boundary" classname="app.lockin.core.timer.DefaultTimerControllerTest" time="0.153"/>
+  <testcase name="heartbeats persist but do not reschedule alarms" classname="app.lockin.core.timer.DefaultTimerControllerTest" time="0.007"/>
+  <testcase name="an alarm firing late still lands the phase change exactly" classname="app.lockin.core.timer.DefaultTimerControllerTest" time="0.015"/>
+  <testcase name="reboot mid-session is announced once" classname="app.lockin.core.timer.DefaultTimerControllerTest" time="0.003"/>
+  <testcase name="unreadable snapshot starts idle" classname="app.lockin.core.timer.DefaultTimerControllerTest" time="0.001"/>
+  <testcase name="process death mid-session is restored and re-projected" classname="app.lockin.core.timer.DefaultTimerControllerTest" time="0.005"/>
+  <testcase name="durable records are written before the snapshot" classname="app.lockin.core.timer.DefaultTimerControllerTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

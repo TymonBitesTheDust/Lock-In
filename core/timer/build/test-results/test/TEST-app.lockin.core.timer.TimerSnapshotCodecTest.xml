@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="app.lockin.core.timer.TimerSnapshotCodecTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-24T02:08:44.829Z" hostname="runnervm8k3b6" time="0.023">
+  <properties/>
+  <testcase name="ints stored as longs are accepted" classname="app.lockin.core.timer.TimerSnapshotCodecTest" time="0.008"/>
+  <testcase name="unreadable or unknown data decodes to null" classname="app.lockin.core.timer.TimerSnapshotCodecTest" time="0.001"/>
+  <testcase name="round-trips every state shape" classname="app.lockin.core.timer.TimerSnapshotCodecTest" time="0.001"/>
+  <testcase name="values are limited to key-value friendly types" classname="app.lockin.core.timer.TimerSnapshotCodecTest" time="0.009"/>
+  <testcase name="empty store decodes to idle" classname="app.lockin.core.timer.TimerSnapshotCodecTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

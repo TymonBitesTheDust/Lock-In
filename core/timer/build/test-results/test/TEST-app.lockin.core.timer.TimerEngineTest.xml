@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="app.lockin.core.timer.TimerEngineTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2026-10-24T02:08:44.805Z" hostname="runnervm8k3b6" time="0.021">
+  <properties/>
+  <testcase name="reboot is detected without a boot counter when the clocks disagree" classname="app.lockin.core.timer.TimerEngineTest" time="0.004"/>
+  <testcase name="changing the wall clock never changes study time" classname="app.lockin.core.timer.TimerEngineTest" time="0.001"/>
+  <testcase name="idle has no readout and no boundary" classname="app.lockin.core.timer.TimerEngineTest" time="0.0"/>
+  <testcase name="every fourth round is followed by a long break" classname="app.lockin.core.timer.TimerEngineTest" time="0.0"/>
+  <testcase name="skip ends the phase now and starts the next one" classname="app.lockin.core.timer.TimerEngineTest" time="0.001"/>
+  <testcase name="pausing immediately after resuming records no empty segment" classname="app.lockin.core.timer.TimerEngineTest" time="0.0"/>
+  <testcase name="readout crosses a boundary even before the alarm is handled" classname="app.lockin.core.timer.TimerEngineTest" time="0.0"/>
+  <testcase name="late wake-up crosses every boundary at its exact instant" classname="app.lockin.core.timer.TimerEngineTest" time="0.001"/>
+  <testcase name="paused sessions survive a reboot untouched" classname="app.lockin.core.timer.TimerEngineTest" time="0.001"/>
+  <testcase name="pausing mid-phase keeps the remaining time" classname="app.lockin.core.timer.TimerEngineTest" time="0.001"/>
+  <testcase name="commands that do not apply are ignored with a reason" classname="app.lockin.core.timer.TimerEngineTest" time="0.0"/>
+  <testcase name="reboot credits time up to the last heartbeat and pauses" classname="app.lockin.core.timer.TimerEngineTest" time="0.0"/>
+  <testcase name="without auto-start focus the session waits after a break" classname="app.lockin.core.timer.TimerEngineTest" time="0.001"/>
+  <testcase name="pomodoro boundaries before the last heartbeat are replayed on reboot" classname="app.lockin.core.timer.TimerEngineTest" time="0.0"/>
+  <testcase name="reconcile is idempotent" classname="app.lockin.core.timer.TimerEngineTest" time="0.0"/>
+  <testcase name="display ticks land exactly on second boundaries" classname="app.lockin.core.timer.TimerEngineTest" time="0.003"/>
+  <testcase name="clock formatting" classname="app.lockin.core.timer.TimerEngineTest" time="0.0"/>
+  <testcase name="stopwatch counts only running time and segments add up to the total" classname="app.lockin.core.timer.TimerEngineTest" time="0.0"/>
+  <testcase name="heartbeats do not create segments or change totals" classname="app.lockin.core.timer.TimerEngineTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
